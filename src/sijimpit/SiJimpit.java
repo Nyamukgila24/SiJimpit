@@ -15,6 +15,9 @@ public class SiJimpit {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        //saya cuman mau ngetes apakah github nyabisa
+        //testing nganu
+        
     }
     
 }
