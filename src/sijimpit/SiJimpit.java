@@ -10,13 +10,8 @@ package sijimpit;
  */
 public class SiJimpit {
 
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String[] args) {
-        // TODO code application logic here
-        //saya cuman mau ngetes apakah github nyabisa
-        //testing nganu
         
     }
     
