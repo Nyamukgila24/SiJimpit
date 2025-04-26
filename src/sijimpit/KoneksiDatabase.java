@@ -5,14 +5,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class KoneksiDatabase {
-    public static Connection connect() {
-        Connection conn = null;
-        try {
-            String url = "jdbc:sqlite:database_sijimpit.db"; // pastikan file db ini tersedia
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println("Koneksi gagal: " + e.getMessage());
+    private static Connection connection;
+
+    public static Connection getConnection() {
+        if (connection == null) {
+            try {
+                String url = "jdbc:mysql://localhost:3306/sijimpit"; // nama database
+                String user = "root"; // user database
+                String password = ""; // password database
+                DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+                connection = DriverManager.getConnection(url, user, password);
+                System.out.println("Koneksi Berhasil");
+            } catch (SQLException e) {
+                System.out.println("Koneksi Gagal: " + e.getMessage());
+            }
         }
-        return conn;
+        return connection;
     }
 }
