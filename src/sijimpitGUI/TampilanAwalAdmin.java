@@ -183,14 +183,21 @@ public class TampilanAwalAdmin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        MenuCatatanKeuanganAdmin keuangan = new MenuCatatanKeuanganAdmin();
+        keuangan.setVisible(true);
+        this.dispose();
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        TampilanStatistik statistik = new TampilanStatistik();
+        statistik.setVisible(true);
+        this.dispose();
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        dispose();
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton6ActionPerformed
 
