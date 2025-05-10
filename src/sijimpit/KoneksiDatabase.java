@@ -10,7 +10,7 @@ public class KoneksiDatabase {
     public static Connection getConnection() {
         if (connection == null) {
             try {
-                String url = "jdbc:mysql://localhost:3306/sijimpit"; // nama database
+                String url = "jdbc:mysql://192.168.150.182:3306/sijimpit";// nama database
                 String user = "root"; // user database
                 String password = ""; // password database
                 DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
