@@ -1,4 +1,3 @@
-
 package sijimpitGUI;
 
 /**
@@ -11,8 +10,13 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
      * Creates new form TampilanAwalWarga
      */
     public TampilanAwalWarga() {
-        initComponents();
-    }
+    initComponents();
+}
+
+        public TampilanAwalWarga(String namaUser) {
+            initComponents();
+            jLabel6.setText(namaUser); // Ubah sesuai nama label yang ingin kamu isi
+}
 
     /**
      * This method is called from within the constructor to initialize the form.

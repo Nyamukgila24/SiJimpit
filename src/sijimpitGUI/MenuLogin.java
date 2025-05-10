@@ -151,10 +151,10 @@ public class MenuLogin extends javax.swing.JFrame {
             String role = rs.getString("role");  // Ambil role dari database
 
             if (role.equalsIgnoreCase("user")) {
-                // Jika role user
-                TampilanAwalWarga userPage = new TampilanAwalWarga();
+                String namaUser = rs.getString("nama");
+                TampilanAwalWarga userPage = new TampilanAwalWarga(namaUser);
                 userPage.setVisible(true);
-                this.dispose(); // Tutup halaman login
+                this.dispose();
             } else if (role.equalsIgnoreCase("admin")) {
                 // Jika role admin
                 TampilanAwalAdmin adminPage = new TampilanAwalAdmin();  // Anda buat tampilan admin sendiri

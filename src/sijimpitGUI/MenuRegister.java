@@ -164,22 +164,24 @@ public class MenuRegister extends javax.swing.JFrame {
     }
     
     try {
-        java.sql.Connection conn = KoneksiDatabase.getConnection();
-        String sql = "INSERT INTO user (nik, password, role) VALUES (?, ?, 'user')";
+        Connection conn = KoneksiDatabase.getConnection();
+        String sql = "INSERT INTO user (nama, nik, password, role) VALUES (?, ?, ?, 'user')";
         java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, nik);
-        pst.setString(2, password);
+        pst.setString(1, nama);
+        pst.setString(2, nik);
+        pst.setString(3, password);
         pst.executeUpdate();
-        javax.swing.JOptionPane.showMessageDialog(this, "Pendaftaran Berhasil!");
-        
-        // Setelah sukses bisa reset field atau pindah ke login form
+        JOptionPane.showMessageDialog(this, "Pendaftaran Berhasil!");
+
+    // Pindah ke login
         MenuLogin loginPage = new MenuLogin();
         loginPage.setVisible(true);
         this.dispose();
-        
-    } catch (Exception e) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Pendaftaran Gagal! " + e.getMessage());
-    }
+
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(this, "Pendaftaran Gagal! " + e.getMessage());
+}
+
 }
 
 private void kosongkanForm() {
