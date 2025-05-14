@@ -4,6 +4,15 @@
  */
 package sijimpitGUI;
 
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import javax.swing.table.DefaultTableModel;
+import sijimpit.Koneksi;
+
 /**
  *
  * @author Aini Intan Saylendra
@@ -15,6 +24,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
      */
     public MenuCatatanKeuanganAdmin() {
         initComponents();
+        tampilkanData();  
     }
 
     /**
@@ -31,9 +41,9 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btn_back = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        Tbl_Keuangan = new javax.swing.JTable();
         jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -53,13 +63,13 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/inbox (1).png"))); // NOI18N
         jButton1.setBorder(null);
 
-        jButton2.setBackground(new java.awt.Color(0, 204, 51));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/back.png"))); // NOI18N
-        jButton2.setBorder(null);
-        jButton2.setPreferredSize(new java.awt.Dimension(32, 32));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btn_back.setBackground(new java.awt.Color(0, 204, 51));
+        btn_back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/back.png"))); // NOI18N
+        btn_back.setBorder(null);
+        btn_back.setPreferredSize(new java.awt.Dimension(32, 32));
+        btn_back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btn_backActionPerformed(evt);
             }
         });
 
@@ -69,7 +79,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_back, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addGap(98, 98, 98)
@@ -87,15 +97,15 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton1)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btn_back, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(29, 29, 29))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addGap(24, 24, 24))))
         );
 
-        jTable1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Tbl_Keuangan.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        Tbl_Keuangan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -122,7 +132,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                 "Nama", "Alamat", "Tanggal", "Nominal"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(Tbl_Keuangan);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
 
@@ -164,13 +174,39 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    private void tampilkanData() {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Nama");
+        model.addColumn("Alamat");
+        model.addColumn("Tanggal");
+        model.addColumn("Nominal");
+        
+        try {
+            Connection conn = Koneksi.getConnection();
+            String sql = "SELECT Nama, Alamat, Tanggal, Nominal FROM catatankeuangan";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("Nama"),
+                    rs.getString("Alamat"),
+                    rs.getDate("Tanggal"),
+                    rs.getDouble("Nominal")
+                });
+            }
+              Tbl_Keuangan.setModel(model);
+        } catch (SQLException e) {
+            System.out.println("Gagal ambil data: " + e.getMessage());
+        }
+    }
+    
+    private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
         TampilanAwalAdmin admin = new TampilanAwalAdmin();
         admin.setVisible(true);
         this.dispose();
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btn_backActionPerformed
 
     /**
      * @param args the command line arguments
@@ -208,14 +244,14 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable Tbl_Keuangan;
+    private javax.swing.JButton btn_back;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
