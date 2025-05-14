@@ -115,7 +115,7 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
         });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setText("Histori Pembayaran");
+        jLabel5.setText("Riwayat Pembayaran");
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/button.png"))); // NOI18N
         jButton5.setBorder(null);
@@ -152,7 +152,7 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(84, 84, 84)
                         .addComponent(jLabel4)))
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

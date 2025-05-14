@@ -132,6 +132,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                 "Nama", "Alamat", "Tanggal", "Nominal"
             }
         ));
+        Tbl_Keuangan.setShowGrid(true);
         jScrollPane1.setViewportView(Tbl_Keuangan);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
