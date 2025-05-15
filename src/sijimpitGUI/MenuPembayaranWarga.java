@@ -104,7 +104,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
             }
         });
 
-        barcode.setIcon(new javax.swing.ImageIcon("C:\\Users\\Aini Intan Saylendra\\OneDrive\\文档\\FILE TUGAS\\TUGAS KULIAH_SEMESTER 2\\PROJEK PBO\\barcode qris.png")); // NOI18N
+        barcode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/barcode qris.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

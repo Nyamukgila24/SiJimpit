@@ -234,7 +234,7 @@
         <Component class="javax.swing.JLabel" name="barcode">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\Aini Intan Saylendra\OneDrive\&#x6587;&#x6863;\FILE TUGAS\TUGAS KULIAH_SEMESTER 2\PROJEK PBO\barcode qris.png"/>
+              <Image iconType="3" name="/sijimpitGUI/SijimpitIcon/barcode qris.png"/>
             </Property>
           </Properties>
         </Component>
