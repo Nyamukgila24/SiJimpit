@@ -193,7 +193,7 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_pembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pembayaranActionPerformed
-        MenuPembayaranWarga pembayaran = new MenuPembayaranWarga();
+        BarcodePembayaran pembayaran = new BarcodePembayaran();
         pembayaran.setVisible(true);
         this.dispose();       
         // TODO add your handling code here:
