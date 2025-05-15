@@ -32,7 +32,7 @@ public class MenuMutasi extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btn_back = new javax.swing.JButton();
         btn_unduh = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        combo_tahun = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -89,7 +89,7 @@ public class MenuMutasi extends javax.swing.JFrame {
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Transaksi Tahun Ini", "Transaksi Tahun Lalu" }));
+        combo_tahun.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Transaksi Tahun Ini", "Transaksi Tahun Lalu" }));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -124,7 +124,7 @@ public class MenuMutasi extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(combo_tahun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
@@ -133,7 +133,7 @@ public class MenuMutasi extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(13, 13, 13)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(combo_tahun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 60, Short.MAX_VALUE))
@@ -198,7 +198,7 @@ public class MenuMutasi extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_back;
     private javax.swing.JButton btn_unduh;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> combo_tahun;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;

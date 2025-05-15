@@ -44,7 +44,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         btn_back = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tbl_Keuangan = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        combo_bulan = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(600, 500));
@@ -135,7 +135,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         Tbl_Keuangan.setShowGrid(true);
         jScrollPane1.setViewportView(Tbl_Keuangan);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
+        combo_bulan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -147,7 +147,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(combo_bulan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -156,7 +156,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(combo_bulan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -247,8 +247,8 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Tbl_Keuangan;
     private javax.swing.JButton btn_back;
+    private javax.swing.JComboBox<String> combo_bulan;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
