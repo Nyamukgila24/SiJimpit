@@ -129,7 +129,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Nama", "Alamat", "Tanggal", "Nominal"
+                "Nama", "NIK", "No. HP", "Tanggal"
             }
         ));
         Tbl_Keuangan.setShowGrid(true);
