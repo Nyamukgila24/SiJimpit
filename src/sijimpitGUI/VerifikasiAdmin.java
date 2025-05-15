@@ -33,8 +33,8 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
         btn_back = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btn_cobalagi = new javax.swing.JButton();
+        btn_verifikasi = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
@@ -95,17 +95,17 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Konfirmasi user telah membayar iuran");
 
-        jButton3.setText("Coba lagi");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btn_cobalagi.setText("Coba lagi");
+        btn_cobalagi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btn_cobalagiActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Verifikasi");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_verifikasi.setText("Verifikasi");
+        btn_verifikasi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_verifikasiActionPerformed(evt);
             }
         });
 
@@ -177,9 +177,9 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(97, 97, 97)
-                .addComponent(jButton1)
+                .addComponent(btn_verifikasi)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(btn_cobalagi)
                 .addGap(122, 122, 122))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -213,8 +213,8 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3))
+                    .addComponent(btn_verifikasi)
+                    .addComponent(btn_cobalagi))
                 .addGap(70, 70, 70)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -266,13 +266,13 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_backActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btn_verifikasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_verifikasiActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btn_verifikasiActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btn_cobalagiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cobalagiActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btn_cobalagiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -312,8 +312,8 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_back;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btn_cobalagi;
+    private javax.swing.JButton btn_verifikasi;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
