@@ -177,23 +177,23 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     private void tampilkanData() {
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Nama");
-        model.addColumn("Alamat");
-        model.addColumn("Tanggal");
-        model.addColumn("Nominal");
+        model.addColumn("nama");
+        model.addColumn("nik");
+        model.addColumn("no_hp");
+        model.addColumn("tanggal");
         
         try {
             Connection conn = Koneksi.getConnection();
-            String sql = "SELECT Nama, Alamat, Tanggal, Nominal FROM catatankeuangan";
+            String sql = "SELECT nama, nik, no_hp, tanggal FROM menu_pembayaran_warga";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getString("Nama"),
-                    rs.getString("Alamat"),
-                    rs.getDate("Tanggal"),
-                    rs.getDouble("Nominal")
+                    rs.getString("nama"),
+                    rs.getString("nik"),
+                    rs.getString("no_hp"),
+                    rs.getDate("tanggal")
                 });
             }
               Tbl_Keuangan.setModel(model);
