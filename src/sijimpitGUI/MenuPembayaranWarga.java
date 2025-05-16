@@ -4,6 +4,11 @@
  */
 package sijimpitGUI;
 
+import java.sql.Connection;
+import sijimpit.KoneksiDatabase;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Aini Intan Saylendra
@@ -33,7 +38,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
+        btn_back = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -56,7 +61,15 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Isi Identitas Anda");
 
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/back.png"))); // NOI18N
+        btn_back.setBackground(new java.awt.Color(0, 204, 51));
+        btn_back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/back.png"))); // NOI18N
+        btn_back.setBorder(null);
+        btn_back.setPreferredSize(new java.awt.Dimension(32, 32));
+        btn_back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_backActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -65,21 +78,21 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel9)
-                .addGap(164, 164, 164)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_back, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(163, 163, 163)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(220, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
+                    .addComponent(btn_back, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(jLabel1))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -125,6 +138,8 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Tanggal");
 
+        jTextField4.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        jTextField4.setForeground(new java.awt.Color(204, 204, 204));
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
@@ -209,7 +224,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
-
+    
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
@@ -223,17 +238,45 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void btn_lanjutkanpembayaran3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_lanjutkanpembayaran3ActionPerformed
-        MenungguKonfirmasiAdmin konfirmasi = new MenungguKonfirmasiAdmin();
+    String nama = jTextField1.getText().trim();
+    String nik = jTextField2.getText().trim();
+    String noHp = jTextField3.getText().trim();
+    String tanggal = jTextField4.getText().trim();
+    
+    if (nama.isEmpty() || nik.isEmpty() || noHp.isEmpty() || tanggal.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
+        return;
+    }
+    try (Connection conn = KoneksiDatabase.getConnection()) {
+        String query = "INSERT INTO menu_pembayaran_warga (nama, nik, no_hp, tanggal) VALUES (?, ?, ?, ?)";
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.setString(1, nama);
+        stmt.setString(2, nik);
+        stmt.setString(3, noHp);
+        stmt.setString(4, tanggal);
+
+        stmt.executeUpdate();
+        JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
+        
+        BarcodePembayaran konfirmasi = new BarcodePembayaran();
         konfirmasi.setVisible(true);
         this.dispose();
+        
+        } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Gagal menyimpan data: " + e.getMessage());
+    }
+        
     }//GEN-LAST:event_btn_lanjutkanpembayaran3ActionPerformed
 
-    private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        MenuPembayaranWarga warga = new MenuPembayaranWarga();
-        warga.setVisible(true);
+    private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
+        TampilanAwalWarga menuwarga = new TampilanAwalWarga();
+        menuwarga.setVisible(true);
         this.dispose();
-        // TODO add your handling code here:
-    }
+        
+    }//GEN-LAST:event_btn_backActionPerformed
+
+
     /**
      * @param args the command line arguments
      */
@@ -273,9 +316,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_lanjutkanpembayaran;
-    private javax.swing.JButton btn_lanjutkanpembayaran1;
-    private javax.swing.JButton btn_lanjutkanpembayaran2;
+    private javax.swing.JButton btn_back;
     private javax.swing.JButton btn_lanjutkanpembayaran3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -286,7 +327,6 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

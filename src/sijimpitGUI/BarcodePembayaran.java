@@ -177,7 +177,7 @@ public class BarcodePembayaran extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
-        TampilanAwalWarga menuwarga = new TampilanAwalWarga();
+        MenuPembayaranWarga menuwarga = new MenuPembayaranWarga();
         menuwarga.setVisible(true);
         this.dispose();
         // TODO add your handling code here:
