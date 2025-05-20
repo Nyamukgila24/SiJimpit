@@ -169,7 +169,7 @@
                   <Table columnCount="3" rowCount="4">
                     <Column editable="true" title="Nama" type="java.lang.Object"/>
                     <Column editable="true" title="NIK" type="java.lang.Object"/>
-                    <Column editable="true" title="Status" type="java.lang.Object"/>
+                    <Column editable="true" title="Status" type="java.lang.Boolean"/>
                   </Table>
                 </Property>
               </Properties>

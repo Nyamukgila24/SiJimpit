@@ -1,13 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package sijimpitGUI;
+import java.sql.Connection;
+import sijimpit.KoneksiDatabase;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.sql.PreparedStatement;
 
-/**
- *
- * @author Aini Intan Saylendra
- */
 public class VerifikasiAdmin extends javax.swing.JFrame {
 
     /**
@@ -15,14 +12,36 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
      */
     public VerifikasiAdmin() {
         initComponents();
-         String[] statusOptions = {"Pending", "Pembayaran Masuk", "Coba Lagi"};
-    javax.swing.JComboBox<String> comboBox = new javax.swing.JComboBox<>(statusOptions);
-    javax.swing.table.TableColumn statusColumn = jTable1.getColumnModel().getColumn(2); // kolom Status
-    statusColumn.setCellEditor(new javax.swing.DefaultCellEditor(comboBox));
+        loadData();
+         
     
     
     
     }
+   private void loadData() {
+    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    model.setRowCount(0); // reset table
+
+    try {
+        Connection conn = KoneksiDatabase.getConnection();
+        String sql = "SELECT nama, nik, status FROM menu_pembayaran_warga";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        java.sql.ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            String nama = rs.getString("nama");
+            String nik = rs.getString("nik");
+            String status = rs.getString("status");
+
+            boolean verifikasi = "verifikasi".equals(status); // true jika status == verifikasi
+
+            model.addRow(new Object[]{nama, nik, verifikasi});
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Gagal memuat data dari database.");
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -95,7 +114,15 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
             new String [] {
                 "Nama", "NIK", "Status"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

@@ -1,23 +1,62 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package sijimpitGUI;
 
-/**
- *
- * @author ASUS
- */
+import java.sql.*;
+import javax.swing.*;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MenungguKonfirmasiAdmin extends javax.swing.JFrame {
+    private String nik;
 
     /**
      * Creates new form MenungguKonfirmasiAdmin
      */
-    public MenungguKonfirmasiAdmin() {
+     public MenungguKonfirmasiAdmin(String nikUser) {
+        this.nik = nikUser; // Simpan NIK yang diterima
         initComponents();
+        startStatusCheck();
         this.setLocationRelativeTo(null); // Center the window
         jProgressBar1.setIndeterminate(true); // Make progress bar animate
     }
+
+    MenungguKonfirmasiAdmin() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    private void startStatusCheck() {
+    Timer timer = new Timer();
+    timer.schedule(new TimerTask() {
+        @Override
+        public void run() {
+            try {
+                // Ganti sesuai dengan koneksi database kamu
+                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/sijimpit", "root", "");
+                Statement stmt = conn.createStatement();
+
+                // Misal kamu ingin mengecek berdasarkan NIK pengguna tertentu
+                String nikPengguna = nik; // HARUS dinamis nanti
+                String sql = "SELECT status FROM menu_pembayaran_warga WHERE nik='" + nikPengguna + "' ORDER BY tanggal DESC LIMIT 1";
+                ResultSet rs = stmt.executeQuery(sql);
+
+                if (rs.next()) {
+                    String status = rs.getString("status");
+                    if ("terbayar".equalsIgnoreCase(status)) {
+                        timer.cancel(); // stop pengecekan
+                        SwingUtilities.invokeLater(() -> {
+                            dispose(); // tutup jendela ini
+                            new PembayaranBerhasil().setVisible(true); // tampilkan jendela sukses
+                        });
+                    }
+                }
+
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }, 0, 5000); // cek setiap 5 detik
+}
 
     
 
@@ -93,18 +132,7 @@ public class MenungguKonfirmasiAdmin extends javax.swing.JFrame {
 
    
     public static void main(String args[]) {
-        try {
-            javax.swing.UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MenungguKonfirmasiAdmin().setVisible(true);
-            }
-        });
     }
     
 
