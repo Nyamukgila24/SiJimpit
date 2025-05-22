@@ -10,11 +10,11 @@ package sijimpitGUI;
  */
 public class BarcodePembayaran extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MenuPembayaranWarga
-     */
-    public BarcodePembayaran() {
-        initComponents();
+    private String nik;
+    
+    public BarcodePembayaran(String nik) {
+         this.nik = nik;
+         initComponents();
     }
 
     /**
@@ -219,11 +219,11 @@ public class BarcodePembayaran extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new BarcodePembayaran().setVisible(true);
-            }
-        });
-    }
+        public void run() {
+            new BarcodePembayaran("1234567890").setVisible(true); // Contoh NIK
+        }
+    });
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel barcode;
