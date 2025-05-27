@@ -7,10 +7,22 @@ package sijimpitGUI;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.sql.Statement;
+import java.text.MessageFormat;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttribute;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.OrientationRequested;
 import sijimpit.Koneksi;
 
 /**
@@ -24,7 +36,12 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
      */
     public MenuCatatanKeuanganAdmin() {
         initComponents();
-        tampilkanData();  
+        inisialisasiBulan();
+        tampilkanSemuaData();
+
+        if (combo_bulan.getItemCount() > 0) {
+            combo_bulan.setSelectedIndex(0);
+        }
     }
 
     /**
@@ -40,7 +57,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btn_unduh = new javax.swing.JButton();
         btn_back = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tbl_Keuangan = new javax.swing.JTable();
@@ -59,9 +76,14 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Catatan Keuangan Masyarakat");
 
-        jButton1.setBackground(new java.awt.Color(0, 204, 51));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/inbox (1).png"))); // NOI18N
-        jButton1.setBorder(null);
+        btn_unduh.setBackground(new java.awt.Color(0, 204, 51));
+        btn_unduh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/inbox (1).png"))); // NOI18N
+        btn_unduh.setBorder(null);
+        btn_unduh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_unduhActionPerformed(evt);
+            }
+        });
 
         btn_back.setBackground(new java.awt.Color(0, 204, 51));
         btn_back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/back.png"))); // NOI18N
@@ -85,7 +107,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                 .addGap(98, 98, 98)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
                 .addGap(69, 69, 69)
-                .addComponent(jButton1)
+                .addComponent(btn_unduh)
                 .addGap(27, 27, 27))
         );
         jPanel2Layout.setVerticalGroup(
@@ -96,7 +118,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1)
+                            .addComponent(btn_unduh)
                             .addComponent(btn_back, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(29, 29, 29))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -136,6 +158,11 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         jScrollPane1.setViewportView(Tbl_Keuangan);
 
         combo_bulan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
+        combo_bulan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                combo_bulanActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -175,39 +202,152 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void tampilkanData() {
+    private void inisialisasiBulan() {
+        combo_bulan.removeAllItems();
+
+        String[] bulan = {
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        };
+        for (String b : bulan) {
+            combo_bulan.addItem("Bulan " + b);
+        }
+    }
+
+    private void tampilkanData(int bulan) {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("nama");
         model.addColumn("nik");
         model.addColumn("no_hp");
         model.addColumn("tanggal");
-        
-        try {
-            Connection conn = Koneksi.getConnection();
-            String sql = "SELECT nama, nik, no_hp, tanggal FROM menu_pembayaran_warga";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
 
-            while (rs.next()) {
+        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? ORDER BY tanggal ASC")) {
+
+            pst.setInt(1, bulan);
+            try (ResultSet rs = pst.executeQuery()) {
+
+                while (rs.next()) {
+                java.sql.Date sqlDate = rs.getDate("tanggal");
+                String formattedDate = "";
+                if (sqlDate != null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                }
                 model.addRow(new Object[]{
                     rs.getString("nama"),
                     rs.getString("nik"),
                     rs.getString("no_hp"),
-                    rs.getDate("tanggal")
+                    formattedDate
                 });
             }
-              Tbl_Keuangan.setModel(model);
+            Tbl_Keuangan.setModel(model);
+        }
+
+             } catch (SQLException e) {
+        System.err.println("Gagal ambil data berdasarkan bulan: " + e.getMessage());
+        JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+    }
+}    
+
+    private void tampilkanSemuaData() {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Nama");
+        model.addColumn("NIK");
+        model.addColumn("No. HP");
+        model.addColumn("Tanggal");
+
+        try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, tanggal FROM menu_pembayaran_warga ORDER BY tanggal ASC")) {
+
+            while (rs.next()) {
+                java.sql.Date sqlDate = rs.getDate("tanggal");
+                String formattedDate = "";
+                if (sqlDate != null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                }
+                model.addRow(new Object[]{
+                    rs.getString("nama"),
+                    rs.getString("nik"),
+                    rs.getString("no_hp"),
+                    formattedDate
+                });
+            }
+            Tbl_Keuangan.setModel(model);
+
         } catch (SQLException e) {
-            System.out.println("Gagal ambil data: " + e.getMessage());
+            System.err.println("Gagal ambil seluruh data: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Gagal mengambil seluruh data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+    private int ubahBulanKeAngka(String selectedMonth) {
+        if (selectedMonth == null) {
+            return -1;
+        }
+        String trimmedSelectedMonth = selectedMonth.trim();
+        System.out.println("DEBUG: trimmedSelectedMonth: '" + trimmedSelectedMonth + "'");
+
+        switch (trimmedSelectedMonth) {
+            case "Bulan Januari":
+                return 1;
+            case "Bulan Februari":
+                return 2;
+            case "Bulan Maret":
+                return 3;
+            case "Bulan April":
+                return 4;
+            case "Bulan Mei":
+                return 5;
+            case "Bulan Juni":
+                return 6;
+            case "Bulan Juli":
+                return 7;
+            case "Bulan Agustus":
+                return 8;
+            case "Bulan September":
+                return 9;
+            case "Bulan Oktober":
+                return 10;
+            case "Bulan November":
+                return 11;
+            case "Bulan Desember":
+                return 12;
+            default:
+            return -1; 
+        }
+    }
+
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
         TampilanAwalAdmin admin = new TampilanAwalAdmin();
         admin.setVisible(true);
         this.dispose();
-        // TODO add your handling code here:
     }//GEN-LAST:event_btn_backActionPerformed
+
+    private void combo_bulanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_bulanActionPerformed
+        String selectedMonth = (String) combo_bulan.getSelectedItem();
+        if (selectedMonth != null && ! selectedMonth.trim().isEmpty()) {
+            int bulanAngka = ubahBulanKeAngka(selectedMonth);
+            if (bulanAngka != -1) {
+                tampilkanData(bulanAngka);
+            } else {
+                JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid.", "Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_combo_bulanActionPerformed
+
+    private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
+        MessageFormat header = new MessageFormat("Tabel Catatan Keuangan");
+        MessageFormat footer = new MessageFormat("SiJimpit");
+        try{
+            PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+            set.add(OrientationRequested.PORTRAIT);
+            Tbl_Keuangan.print(JTable.PrintMode.FIT_WIDTH, header, footer, true, set, true);
+            JOptionPane.showMessageDialog(null, "\n" + "Printed Succefully");
+        } catch (java.awt.print.PrinterException e) {
+            JOptionPane.showMessageDialog(null, "\n" + "Failed"
+                    + "\n" + e);
+        }
+    }//GEN-LAST:event_btn_unduhActionPerformed
 
     /**
      * @param args the command line arguments
@@ -247,8 +387,8 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Tbl_Keuangan;
     private javax.swing.JButton btn_back;
+    private javax.swing.JButton btn_unduh;
     private javax.swing.JComboBox<String> combo_bulan;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;

@@ -7,24 +7,32 @@ package sijimpit;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-/**
- *
- * @author Aini Intan Saylendra
- */
+import javax.swing.JOptionPane; /**
+         *
+         * @author Aini Intan Saylendra
+         */
+
 public class Koneksi {
-    private static Connection Koneksi;
-    public static Connection getConnection() {
-        if (Koneksi == null) {
-         try {
-            String url = "jdbc:mysql://localhost:3306/sijimpit";
-            String user = "root"; 
-            String pass = ""; 
-            Koneksi = DriverManager.getConnection(url, user, pass);
-            System.out.println("Koneksi berhasil.");
+
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/sijimpit";
+    private static final String USER = "root";
+    private static final String PASS = "";
+
+    public static Connection getConnection() throws SQLException {
+        Connection connection = null;
+
+        try {
+            Class.forName(JDBC_DRIVER);
+            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+            return connection;
+        } catch (ClassNotFoundException e) {
+            System.err.println("Driver JDBC tidak ditemukan: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Driver database tidak ditemukan. Pastikan library MySQL/JDBC ada di project Libraries.", "Error Koneksi", JOptionPane.ERROR_MESSAGE);
+            throw new SQLException("Driver JDBC tidak ditemukan.", e); 
         } catch (SQLException e) {
-            System.out.println("Koneksi gagal: " + e.getMessage());
-        }
-    }
-        return Koneksi;
-    }    
+            System.err.println("Gagal membuat koneksi ke database: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Gagal terkoneksi ke database: " + e.getMessage() + "\nPeriksa pengaturan database Anda (URL, Username, Password) atau pastikan server MySQL berjalan.", "Error Koneksi", JOptionPane.ERROR_MESSAGE);
+            throw e;            
 }
+} }

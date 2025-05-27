@@ -1,22 +1,64 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package sijimpitGUI;
 
-/**
- *
- * @author ASUS
- */
+import java.sql.*;
+import javax.swing.*;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MenungguKonfirmasiAdmin extends javax.swing.JFrame {
+    private String nik;
 
     /**
      * Creates new form MenungguKonfirmasiAdmin
      */
-    public MenungguKonfirmasiAdmin() {
+     public MenungguKonfirmasiAdmin(String nikUser) {
+        this.nik = nikUser; // Simpan NIK yang diterima
         initComponents();
-        this.setLocationRelativeTo(null); // Center the window on screen
+        startStatusCheck();
+        this.setLocationRelativeTo(null); // Center the window
+        jProgressBar1.setIndeterminate(true); // Make progress bar animate
     }
+
+    MenungguKonfirmasiAdmin() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    private void startStatusCheck() {
+    Timer timer = new Timer();
+    timer.schedule(new TimerTask() {
+        @Override
+        public void run() {
+            try {
+                // Ganti sesuai dengan koneksi database kamu
+                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/sijimpit", "root", "");
+                Statement stmt = conn.createStatement();
+
+                // Misal kamu ingin mengecek berdasarkan NIK pengguna tertentu
+                String nikPengguna = nik; // HARUS dinamis nanti
+                String sql = "SELECT status FROM menu_pembayaran_warga WHERE nik='" + nikPengguna + "' ORDER BY tanggal DESC LIMIT 1";
+                ResultSet rs = stmt.executeQuery(sql);
+
+                if (rs.next()) {
+                    String status = rs.getString("status");
+                    if ("terbayar".equalsIgnoreCase(status)) {
+                        timer.cancel(); // stop pengecekan
+                        SwingUtilities.invokeLater(() -> {
+                            dispose(); // tutup jendela ini
+                            new PembayaranBerhasil().setVisible(true); // tampilkan jendela sukses
+                        });
+                    }
+                }
+
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }, 0, 5000); // cek setiap 5 detik
+}
+
+    
 
 
     /**
@@ -88,82 +130,9 @@ public class MenungguKonfirmasiAdmin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void MenungguKonfirmasiAdmin() {
-
-        jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/sand-clock.png")));
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        jLabel1.setText("Menunggu Konfirmasi dari Admin");
-
-        jProgressBar1.setBackground(new java.awt.Color(232, 232, 232));
-        jProgressBar1.setIndeterminate(true); // Enable indeterminate mode
-
-        // Rest of the auto-generated UI component layout code remains the same
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(76, 76, 76))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(116, 116, 116))))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(57, 57, 57)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 65, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addComponent(jLabel2)
-                .addGap(39, 39, 39)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(67, 67, 67))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        pack();
-    }
-
+   
     public static void main(String args[]) {
-        try {
-            javax.swing.UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MenungguKonfirmasiAdmin().setVisible(true);
-            }
-        });
+        
     }
     
 
