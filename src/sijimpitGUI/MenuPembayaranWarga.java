@@ -140,8 +140,6 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Tanggal");
 
-        jTextField4.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
-        jTextField4.setForeground(new java.awt.Color(204, 204, 204));
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
@@ -161,8 +159,6 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel11.setText("Nominal");
 
-        jTextField5.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
-        jTextField5.setForeground(new java.awt.Color(204, 204, 204));
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField5ActionPerformed(evt);
@@ -282,7 +278,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         stmt.executeUpdate();
         JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
         
-        BarcodePembayaran konfirmasi = new BarcodePembayaran();
+        BarcodePembayaran konfirmasi = new BarcodePembayaran(nik);
         konfirmasi.setVisible(true);
         this.dispose();
         

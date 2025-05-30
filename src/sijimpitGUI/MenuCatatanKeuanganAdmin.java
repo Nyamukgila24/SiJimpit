@@ -19,10 +19,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.sql.Statement;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttribute;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.OrientationRequested;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import sijimpit.Koneksi;
 
 /**
@@ -30,6 +34,8 @@ import sijimpit.Koneksi;
  * @author Aini Intan Saylendra
  */
 public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
+
+    private Connection conn;
 
     /**
      * Creates new form MenuCatatanKeuanganAdmin
@@ -227,27 +233,27 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
             try (ResultSet rs = pst.executeQuery()) {
 
                 while (rs.next()) {
-                java.sql.Date sqlDate = rs.getDate("tanggal");
-                String formattedDate = "";
-                if (sqlDate != null) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                    formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                    java.sql.Date sqlDate = rs.getDate("tanggal");
+                    String formattedDate = "";
+                    if (sqlDate != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                        formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                    }
+                    model.addRow(new Object[]{
+                        rs.getString("nama"),
+                        rs.getString("nik"),
+                        rs.getString("no_hp"),
+                        formattedDate
+                    });
                 }
-                model.addRow(new Object[]{
-                    rs.getString("nama"),
-                    rs.getString("nik"),
-                    rs.getString("no_hp"),
-                    formattedDate
-                });
+                Tbl_Keuangan.setModel(model);
             }
-            Tbl_Keuangan.setModel(model);
-        }
 
-             } catch (SQLException e) {
-        System.err.println("Gagal ambil data berdasarkan bulan: " + e.getMessage());
-        JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            System.err.println("Gagal ambil data berdasarkan bulan: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+        }
     }
-}    
 
     private void tampilkanSemuaData() {
         DefaultTableModel model = new DefaultTableModel();
@@ -313,7 +319,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
             case "Bulan Desember":
                 return 12;
             default:
-            return -1; 
+                return -1;
         }
     }
 
@@ -325,7 +331,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
 
     private void combo_bulanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_bulanActionPerformed
         String selectedMonth = (String) combo_bulan.getSelectedItem();
-        if (selectedMonth != null && ! selectedMonth.trim().isEmpty()) {
+        if (selectedMonth != null && !selectedMonth.trim().isEmpty()) {
             int bulanAngka = ubahBulanKeAngka(selectedMonth);
             if (bulanAngka != -1) {
                 tampilkanData(bulanAngka);
@@ -336,16 +342,15 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_combo_bulanActionPerformed
 
     private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
-        MessageFormat header = new MessageFormat("Tabel Catatan Keuangan");
-        MessageFormat footer = new MessageFormat("SiJimpit");
-        try{
-            PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
-            set.add(OrientationRequested.PORTRAIT);
-            Tbl_Keuangan.print(JTable.PrintMode.FIT_WIDTH, header, footer, true, set, true);
-            JOptionPane.showMessageDialog(null, "\n" + "Printed Succefully");
-        } catch (java.awt.print.PrinterException e) {
-            JOptionPane.showMessageDialog(null, "\n" + "Failed"
-                    + "\n" + e);
+        try {
+            String reportPath = "src/jasper/CatatanKeuangan.jasper";
+            HashMap<String, Object> parameters = new HashMap<>();
+            Connection conn = Koneksi.getConnection();
+            JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
+            JasperViewer viewer = new JasperViewer(print, false);
+            viewer.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }//GEN-LAST:event_btn_unduhActionPerformed
 

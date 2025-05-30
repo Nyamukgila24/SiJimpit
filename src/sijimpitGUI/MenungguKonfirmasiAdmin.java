@@ -19,14 +19,25 @@ public class MenungguKonfirmasiAdmin extends javax.swing.JFrame {
         jProgressBar1.setIndeterminate(true); // Make progress bar animate
     }
 
+<<<<<<< HEAD
     MenungguKonfirmasiAdmin() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+=======
+    public MenungguKonfirmasiAdmin() {
+    // Tambahkan inisialisasi GUI atau logika lain di sini
+    initComponents(); // jika Anda pakai NetBeans GUI Builder
+}
+>>>>>>> 26f4276de6611404242b06ba88c42b5ccfcdcf4f
     private void startStatusCheck() {
     Timer timer = new Timer();
     timer.schedule(new TimerTask() {
         @Override
         public void run() {
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 26f4276de6611404242b06ba88c42b5ccfcdcf4f
             try {
                 // Ganti sesuai dengan koneksi database kamu
                 Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/sijimpit", "root", "");
