@@ -10,10 +10,7 @@ package sijimpitGUI;
  */
 public class BarcodePembayaran extends javax.swing.JFrame {
 
-    private String nik;
-    
-    public BarcodePembayaran(String nik) {
-         this.nik = nik;
+    public BarcodePembayaran() {
          initComponents();
     }
 
@@ -184,8 +181,8 @@ public class BarcodePembayaran extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_backActionPerformed
 
     private void btn_lanjutkanpembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_lanjutkanpembayaranActionPerformed
-        MenungguKonfirmasiAdmin konfirmasi = new MenungguKonfirmasiAdmin();
-        konfirmasi.setVisible(true);
+        PembayaranSelesai selesai = new PembayaranSelesai();
+        selesai.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_lanjutkanpembayaranActionPerformed
 
@@ -220,7 +217,7 @@ public class BarcodePembayaran extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
         public void run() {
-            new BarcodePembayaran("1234567890").setVisible(true); // Contoh NIK
+            new BarcodePembayaran().setVisible(true); 
         }
     });
 }
