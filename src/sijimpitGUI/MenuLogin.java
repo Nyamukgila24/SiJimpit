@@ -139,10 +139,11 @@ public class MenuLogin extends javax.swing.JFrame {
         
                if (rs.next()) {  // Jika data ditemukan
             String role = rs.getString("role");  // Ambil role dari database
+            
 
             if (role.equalsIgnoreCase("user")) {
                 String namaUser = rs.getString("nama");
-                TampilanAwalWarga userPage = new TampilanAwalWarga(namaUser);
+                TampilanAwalWarga userPage = new TampilanAwalWarga();
                 userPage.setVisible(true);
                 this.dispose();
             } else if (role.equalsIgnoreCase("admin")) {

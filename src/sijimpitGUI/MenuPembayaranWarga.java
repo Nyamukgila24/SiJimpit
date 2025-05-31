@@ -14,13 +14,16 @@ import javax.swing.JOptionPane;
  * @author Aini Intan Saylendra
  */
 public class MenuPembayaranWarga extends javax.swing.JFrame {
+    private String nik;
+    
+    public MenuPembayaranWarga() {
+        initComponents();
+    }
+
 
     /**
      * Creates new form MenuNominal
      */
-    public MenuPembayaranWarga() {
-        initComponents();
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -269,8 +272,8 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     try (Connection conn = KoneksiDatabase.getConnection()) {
         String query = "INSERT INTO menu_pembayaran_warga (nama, nik, no_hp, tanggal, nominal) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setString(1, nama);
-        stmt.setString(2, nik);
+        stmt.setString(1, nik);
+        stmt.setString(2, nama);
         stmt.setString(3, noHp);
         stmt.setString(4, tanggal);
         stmt.setString(5, nominal);
@@ -278,7 +281,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         stmt.executeUpdate();
         JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
         
-        BarcodePembayaran konfirmasi = new BarcodePembayaran(nik);
+        BarcodePembayaran konfirmasi = new BarcodePembayaran();
         konfirmasi.setVisible(true);
         this.dispose();
         
@@ -334,6 +337,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                
                 new MenuPembayaranWarga().setVisible(true);
             }
         });

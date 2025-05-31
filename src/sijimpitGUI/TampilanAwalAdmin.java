@@ -115,7 +115,7 @@ public class TampilanAwalAdmin extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Keluar");
 
-        btn_verifikasipembayaran.setIcon(new javax.swing.ImageIcon("C:\\Users\\Aini Intan Saylendra\\Downloads\\icon_verifikasi.png")); // NOI18N
+        btn_verifikasipembayaran.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/icon_verifikasi.png"))); // NOI18N
         btn_verifikasipembayaran.setBorderPainted(false);
         btn_verifikasipembayaran.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
