@@ -342,15 +342,51 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_combo_bulanActionPerformed
 
     private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
-        try {
+         try {
+            // Path menuju file .jasper Anda
             String reportPath = "src/jasper/CatatanKeuangan.jasper";
+
+            // Membuat HashMap untuk menyimpan parameter yang akan dikirim ke laporan Jasper
             HashMap<String, Object> parameters = new HashMap<>();
-            Connection conn = Koneksi.getConnection();
+
+            // 1. Dapatkan nilai bulan yang dipilih dari combobox
+            // Pastikan combo_bulan sudah diinisialisasi dan terisi data
+            String selectedMonth = (String) combo_bulan.getSelectedItem(); // Mendapatkan item yang dipilih
+
+            int monthNumber;
+
+            // Memanggil fungsi helper untuk mengonversi nama bulan ke angka
+            monthNumber = ubahBulanKeAngka(selectedMonth);
+
+            // 2. Kirim nilai bulan sebagai parameter ke laporan Jasper
+            if (monthNumber != -1) { // Pastikan bulan yang dipilih valid (bukan -1)
+                // Kunci "parameter_bulan" harus sama persis dengan nama parameter di file .jrxml Anda
+                parameters.put("parameter_bulan", monthNumber);
+
+                // --- DEBUGGING: Cek parameter yang dikirim ---
+                System.out.println("Parameters yang dikirim ke Jasper: " + parameters);
+                System.out.println("Nilai parameter_bulan: " + parameters.get("parameter_bulan"));
+
+            } else {
+                // Jika bulan tidak valid, tampilkan pesan kesalahan dan hentikan proses
+                JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid. Mohon pilih bulan yang benar.", "Error", JOptionPane.ERROR_MESSAGE);
+                return; // Hentikan eksekusi metode
+            }
+
+            // Dapatkan koneksi database
+            Connection conn = Koneksi.getConnection(); // Pastikan kelas Koneksi Anda sudah benar
+
+            // Mengisi laporan Jasper dengan data dari database dan parameter yang diberikan
             JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
-            JasperViewer viewer = new JasperViewer(print, false);
+
+            // Menampilkan laporan dalam JasperViewer
+            JasperViewer viewer = new JasperViewer(print, false); // 'false' berarti JasperViewer akan menutup saat ditutup
             viewer.setVisible(true);
+
         } catch (Exception e) {
-            e.printStackTrace();
+            // Menangkap semua jenis Exception yang mungkin terjadi selama proses
+            e.printStackTrace(); // Cetak stack trace untuk debugging lebih lanjut
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_unduhActionPerformed
 
