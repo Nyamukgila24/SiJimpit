@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package sijimpitGUI;
 
 import java.sql.Connection;
@@ -9,10 +6,7 @@ import sijimpit.KoneksiDatabase;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-/**
- *
- * @author Aini Intan Saylendra
- */
+
 public class MenuPembayaranWarga extends javax.swing.JFrame {
     
     private String namaUser;

@@ -209,7 +209,7 @@ public String getNamaUser() {
     }//GEN-LAST:event_btn_pembayaranActionPerformed
 
     private void btn_riwayatpembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_riwayatpembayaranActionPerformed
-       MenuMutasi mutasi = new MenuMutasi();
+       MenuMutasi mutasi = new MenuMutasi(namaUser);
        mutasi.setVisible(true);
        this.dispose();
        // TODO add your handling code here:
