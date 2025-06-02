@@ -6,6 +6,8 @@ package sijimpitGUI;
  * @author ASUS
  */
 public class TampilanAwalWarga extends javax.swing.JFrame {
+ private String namaUser;
+ 
 
 
     public TampilanAwalWarga() {
@@ -14,8 +16,11 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
 
         public TampilanAwalWarga(String namaUser) {
             initComponents();
+            this.namaUser = namaUser;
             jLabel6.setText(namaUser); // Ubah sesuai nama label yang ingin kamu isi
 }
+        
+        
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -185,9 +190,11 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+public String getNamaUser() {
+            return namaUser;
+        }
     private void btn_pembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pembayaranActionPerformed
-        MenuPembayaranWarga pembayaran = new MenuPembayaranWarga();
+        MenuPembayaranWarga pembayaran = new MenuPembayaranWarga(namaUser);
         pembayaran.setVisible(true);
         this.dispose();       
         // TODO add your handling code here:
@@ -240,6 +247,7 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
         }
     });
 }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_keluar;

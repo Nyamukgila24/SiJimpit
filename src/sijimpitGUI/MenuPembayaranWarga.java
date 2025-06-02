@@ -14,12 +14,22 @@ import javax.swing.JOptionPane;
  * @author Aini Intan Saylendra
  */
 public class MenuPembayaranWarga extends javax.swing.JFrame {
-    private String nik;
     
+    private String namaUser;
+
     public MenuPembayaranWarga() {
         initComponents();
     }
+    
+        public MenuPembayaranWarga(String namaUser){
+            this.namaUser = namaUser;
+            initComponents();
+        }
 
+
+    
+    
+    
 
     /**
      * Creates new form MenuNominal
@@ -87,7 +97,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
                 .addComponent(btn_back, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(163, 163, 163)
                 .addComponent(jLabel1)
-                .addContainerGap(220, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -192,7 +202,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(169, 169, 169)
                         .addComponent(btn_lanjutkanpembayaran3, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -293,7 +303,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_lanjutkanpembayaran3ActionPerformed
 
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
-        TampilanAwalWarga menuwarga = new TampilanAwalWarga();
+        TampilanAwalWarga menuwarga = new TampilanAwalWarga(namaUser);
         menuwarga.setVisible(true);
         this.dispose();
         
