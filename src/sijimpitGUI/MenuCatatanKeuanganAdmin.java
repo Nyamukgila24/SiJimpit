@@ -41,6 +41,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
      * Creates new form MenuCatatanKeuanganAdmin
      */
     public MenuCatatanKeuanganAdmin() {
+        setLocationRelativeTo(null);
         initComponents();
         inisialisasiBulan();
         tampilkanSemuaData();

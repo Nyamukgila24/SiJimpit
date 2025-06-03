@@ -12,13 +12,11 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
      */
     public VerifikasiAdmin() {
         initComponents();
-        
+        setLocationRelativeTo(null);
         loadData();
-         
-    
-    
-    
+
     }
+    
    private void loadData() {
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
     model.setRowCount(0); // reset table

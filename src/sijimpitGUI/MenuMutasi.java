@@ -10,14 +10,17 @@ package sijimpitGUI;
  */
 public class MenuMutasi extends javax.swing.JFrame {
 private String namaUser;
-    /**
-     * Creates new form MenuMutasi
-     */
+private String noHP;
+private String nik;
+
     public MenuMutasi() {
         initComponents();
+        setLocationRelativeTo(null);
     }
-        public MenuMutasi(String namaUser){
+        public MenuMutasi(String namaUser, String noHP, String nik){
             this.namaUser = namaUser;
+            this.noHP = noHP;
+            this.nik = nik;
             initComponents();
         }
 
@@ -162,7 +165,7 @@ private String namaUser;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
-        TampilanAwalWarga menuwarga = new TampilanAwalWarga(namaUser);
+        TampilanAwalWarga menuwarga = new TampilanAwalWarga(namaUser,noHP,nik);
         menuwarga.setVisible(true);
         this.dispose();
         // TODO add your handling code here:

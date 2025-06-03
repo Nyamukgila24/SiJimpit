@@ -12,6 +12,7 @@ public class BarcodePembayaran extends javax.swing.JFrame {
 
     public BarcodePembayaran() {
          initComponents();
+         setLocationRelativeTo(null);
     }
 
     /**

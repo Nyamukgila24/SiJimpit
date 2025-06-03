@@ -11,6 +11,7 @@ public class MenuLogin extends javax.swing.JFrame {
 
     public MenuLogin() {
         initComponents();
+        setLocationRelativeTo(null);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
         jButton2ActionPerformed(evt);
@@ -83,9 +84,9 @@ public class MenuLogin extends javax.swing.JFrame {
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton1))
-                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING))
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(146, Short.MAX_VALUE))
         );
@@ -142,7 +143,8 @@ public class MenuLogin extends javax.swing.JFrame {
             
             if (role.equalsIgnoreCase("user")) {
                 String namaUser = rs.getString("nama");
-                TampilanAwalWarga userPage = new TampilanAwalWarga(namaUser);
+                String noHP = rs.getString("NoHp");
+                TampilanAwalWarga userPage = new TampilanAwalWarga(namaUser, noHP, nik);
                 userPage.setVisible(true);
                 this.dispose();
             } else if (role.equalsIgnoreCase("admin")) {
@@ -154,7 +156,7 @@ public class MenuLogin extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Role tidak dikenali!");
             }
         } else {
-            JOptionPane.showMessageDialog(this, "NIK atau Password salah!");
+            JOptionPane.showMessageDialog(this, "Nik atau Password salah!");
         }
 
     } catch (Exception e) {
