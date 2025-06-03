@@ -135,32 +135,33 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         Tbl_Keuangan.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         Tbl_Keuangan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Nama", "NIK", "No. HP", "Tanggal"
+                "Nama", "NIK", "No. HP", "Nominal", "Tanggal"
             }
         ));
-        Tbl_Keuangan.setShowGrid(true);
+        Tbl_Keuangan.setShowGrid(false);
+        Tbl_Keuangan.setShowVerticalLines(true);
         jScrollPane1.setViewportView(Tbl_Keuangan);
 
         combo_bulan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
@@ -225,9 +226,10 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("nama");
         model.addColumn("nik");
         model.addColumn("no_hp");
+        model.addColumn("nominal");
         model.addColumn("tanggal");
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? ORDER BY tanggal ASC")) {
+        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal,  tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? ORDER BY tanggal ASC")) {
 
             pst.setInt(1, bulan);
             try (ResultSet rs = pst.executeQuery()) {
@@ -243,6 +245,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                         rs.getString("nama"),
                         rs.getString("nik"),
                         rs.getString("no_hp"),
+                        rs.getString("nominal"),
                         formattedDate
                     });
                 }
@@ -260,9 +263,10 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("Nama");
         model.addColumn("NIK");
         model.addColumn("No. HP");
-        model.addColumn("Tanggal");
+        model.addColumn("Nominal");
+        model.addColumn("Tanggal");    
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, tanggal FROM menu_pembayaran_warga ORDER BY tanggal ASC")) {
+        try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga ORDER BY tanggal ASC")) {
 
             while (rs.next()) {
                 java.sql.Date sqlDate = rs.getDate("tanggal");
@@ -275,6 +279,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                     rs.getString("nama"),
                     rs.getString("nik"),
                     rs.getString("no_hp"),
+                    rs.getString("nominal"),
                     formattedDate
                 });
             }
@@ -343,49 +348,29 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
 
     private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
          try {
-            // Path menuju file .jasper Anda
             String reportPath = "src/jasper/CatatanKeuangan.jasper";
-
-            // Membuat HashMap untuk menyimpan parameter yang akan dikirim ke laporan Jasper
             HashMap<String, Object> parameters = new HashMap<>();
-
-            // 1. Dapatkan nilai bulan yang dipilih dari combobox
-            // Pastikan combo_bulan sudah diinisialisasi dan terisi data
-            String selectedMonth = (String) combo_bulan.getSelectedItem(); // Mendapatkan item yang dipilih
-
+            String selectedMonth = (String) combo_bulan.getSelectedItem();
             int monthNumber;
 
-            // Memanggil fungsi helper untuk mengonversi nama bulan ke angka
             monthNumber = ubahBulanKeAngka(selectedMonth);
-
-            // 2. Kirim nilai bulan sebagai parameter ke laporan Jasper
-            if (monthNumber != -1) { // Pastikan bulan yang dipilih valid (bukan -1)
-                // Kunci "parameter_bulan" harus sama persis dengan nama parameter di file .jrxml Anda
+            if (monthNumber != -1) { 
                 parameters.put("parameter_bulan", monthNumber);
-
-                // --- DEBUGGING: Cek parameter yang dikirim ---
                 System.out.println("Parameters yang dikirim ke Jasper: " + parameters);
                 System.out.println("Nilai parameter_bulan: " + parameters.get("parameter_bulan"));
 
             } else {
-                // Jika bulan tidak valid, tampilkan pesan kesalahan dan hentikan proses
                 JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid. Mohon pilih bulan yang benar.", "Error", JOptionPane.ERROR_MESSAGE);
-                return; // Hentikan eksekusi metode
+                return;
             }
 
-            // Dapatkan koneksi database
-            Connection conn = Koneksi.getConnection(); // Pastikan kelas Koneksi Anda sudah benar
-
-            // Mengisi laporan Jasper dengan data dari database dan parameter yang diberikan
+            Connection conn = Koneksi.getConnection();
             JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
-
-            // Menampilkan laporan dalam JasperViewer
-            JasperViewer viewer = new JasperViewer(print, false); // 'false' berarti JasperViewer akan menutup saat ditutup
+            JasperViewer viewer = new JasperViewer(print, false); 
             viewer.setVisible(true);
 
         } catch (Exception e) {
-            // Menangkap semua jenis Exception yang mungkin terjadi selama proses
-            e.printStackTrace(); // Cetak stack trace untuk debugging lebih lanjut
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_unduhActionPerformed

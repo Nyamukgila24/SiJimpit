@@ -191,10 +191,11 @@
                   </Border>
                 </Property>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="4" rowCount="20">
+                  <Table columnCount="5" rowCount="20">
                     <Column editable="true" title="Nama" type="java.lang.Object"/>
                     <Column editable="true" title="NIK" type="java.lang.Object"/>
                     <Column editable="true" title="No. HP" type="java.lang.Object"/>
+                    <Column editable="true" title="Nominal" type="java.lang.Object"/>
                     <Column editable="true" title="Tanggal" type="java.lang.Object"/>
                   </Table>
                 </Property>
@@ -220,9 +221,15 @@
                       <Editor/>
                       <Renderer/>
                     </Column>
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
+                    </Column>
                   </TableColumnModel>
                 </Property>
-                <Property name="showGrid" type="boolean" value="true"/>
+                <Property name="showGrid" type="boolean" value="false"/>
+                <Property name="showVerticalLines" type="boolean" value="true"/>
                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                   <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                 </Property>
