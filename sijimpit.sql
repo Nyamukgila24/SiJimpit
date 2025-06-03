@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 31 Bulan Mei 2025 pada 09.24
+-- Waktu pembuatan: 03 Jun 2025 pada 07.25
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.0.30
 
@@ -69,6 +69,7 @@ CREATE TABLE `user` (
   `nik` varchar(20) NOT NULL,
   `nama` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
+  `noHP` varchar(20) NOT NULL,
   `role` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -76,16 +77,13 @@ CREATE TABLE `user` (
 -- Dumping data untuk tabel `user`
 --
 
-INSERT INTO `user` (`id`, `nik`, `nama`, `password`, `role`) VALUES
-(1, '12345678901234567890', '', 'rahasia123', 'user'),
-(2, '1111111111111111', '', 'admin123', 'admin'),
-(6, '123456', '', '123', 'user'),
-(7, '12345', '', '111111', 'user'),
-(8, '12345678901', 'iqbal', '123456', 'user'),
-(9, '2222', 'amr', '111111', 'user'),
-(10, '11', 'jembod', '11', 'user'),
-(11, '11', 'Amri', '11', 'user'),
-(12, '22', 'jokowi ', '22', 'user');
+INSERT INTO `user` (`id`, `nik`, `nama`, `password`, `noHP`, `role`) VALUES
+(2, '1111111111111111', '', 'admin123', '', 'admin'),
+(8, '12345678901', 'iqbal', '123456', '', 'user'),
+(9, '2222', 'amr', '111111', '', 'user'),
+(11, '11', 'Amri', '11', '', 'user'),
+(12, '22', 'jokowi ', '22', '', 'user'),
+(14, '123', 'Haji Susanto', '123', '083', 'user');
 
 --
 -- Indexes for dumped tables
@@ -105,7 +103,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
