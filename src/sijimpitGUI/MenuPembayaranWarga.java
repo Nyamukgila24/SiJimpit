@@ -279,7 +279,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         stmt.executeUpdate();
         JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
         
-        BarcodePembayaran konfirmasi = new BarcodePembayaran();
+        BarcodePembayaran konfirmasi = new BarcodePembayaran(namaUser,noHP,nik);
         konfirmasi.setVisible(true);
         this.dispose();
         

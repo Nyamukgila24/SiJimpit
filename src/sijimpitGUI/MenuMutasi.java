@@ -1,13 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package sijimpitGUI;
 
-/**
- *
- * @author Aini Intan Saylendra
- */
+import java.sql.*;
+import javax.swing.table.DefaultTableModel;
 public class MenuMutasi extends javax.swing.JFrame {
 private String namaUser;
 private String noHP;
@@ -15,6 +10,19 @@ private String nik;
 
     public MenuMutasi() {
         initComponents();
+        combo_tahun.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+        String selected = (String) combo_tahun.getSelectedItem();
+        String tahun = java.time.Year.now().toString(); // default tahun ini
+
+        if (selected.equals("Transaksi Tahun Lalu")) {
+            int tahunLalu = java.time.Year.now().getValue() - 1;
+            tahun = Integer.toString(tahunLalu);
+        }
+
+        tampilkanDataMutasi(tahun);
+    }
+});
         setLocationRelativeTo(null);
     }
         public MenuMutasi(String namaUser, String noHP, String nik){
@@ -22,7 +30,10 @@ private String nik;
             this.noHP = noHP;
             this.nik = nik;
             initComponents();
+            String tahunSekarang = java.time.Year.now().toString();
+            tampilkanDataMutasi(tahunSekarang);
         }
+        
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -170,7 +181,32 @@ private String nik;
         this.dispose();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_backActionPerformed
+private void tampilkanDataMutasi(String tahun) {
+    DefaultTableModel model = new DefaultTableModel();
+    model.addColumn("Tanggal");
+    model.addColumn("Nominal");
+    model.addColumn("Status");
 
+    try {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sijimpit", "root", "");
+        String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga WHERE nik = ? AND YEAR(tanggal) = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, nik); // NIK dari user login
+        stmt.setString(2, tahun);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            model.addRow(new Object[]{
+                rs.getString("tanggal"),
+                rs.getString("nominal"),
+                rs.getString("status")
+            });
+        }
+        jTable1.setModel(model);
+        conn.close();
+    } catch (SQLException e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Gagal ambil data mutasi: " + e.getMessage());
+    }
+}
     /**
      * @param args the command line arguments
      */

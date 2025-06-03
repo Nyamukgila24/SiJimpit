@@ -9,11 +9,20 @@ package sijimpitGUI;
  * @author Aini Intan Saylendra
  */
 public class BarcodePembayaran extends javax.swing.JFrame {
-
+private String namaUser;
+private String noHP;
+private String nik;
     public BarcodePembayaran() {
          initComponents();
          setLocationRelativeTo(null);
     }
+        public BarcodePembayaran(String namaUser, String noHP, String nik){
+            this.namaUser = namaUser;
+            this.noHP = noHP;
+            this.nik = nik;
+            initComponents();
+        }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -187,7 +196,7 @@ public class BarcodePembayaran extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_backActionPerformed
 
     private void btn_lanjutkanpembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_lanjutkanpembayaranActionPerformed
-        PembayaranSelesai selesai = new PembayaranSelesai();
+        PembayaranSelesai selesai = new PembayaranSelesai(namaUser,noHP,nik);
         selesai.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_lanjutkanpembayaranActionPerformed

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package sijimpitGUI;
 
 /**
@@ -9,14 +6,20 @@ package sijimpitGUI;
  * @author ASUS
  */
 public class PembayaranSelesai extends javax.swing.JFrame {
-
-    /**
-     * Creates new form PembayaranSelesai
-     */
+    private String namaUser;
+    private String noHP;
+    private String nik;
+    
     public PembayaranSelesai() {
         initComponents();
         setLocationRelativeTo(null);
     }
+        public PembayaranSelesai(String namaUser, String noHP, String nik){
+            this.namaUser = namaUser;
+            this.noHP = noHP;
+            this.nik = nik;
+            initComponents();
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -121,7 +124,7 @@ public class PembayaranSelesai extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        TampilanAwalWarga userPage = new TampilanAwalWarga();
+        TampilanAwalWarga userPage = new TampilanAwalWarga(namaUser,noHP,nik);
         userPage.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
