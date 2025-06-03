@@ -9,13 +9,20 @@ package sijimpitGUI;
  * @author Aini Intan Saylendra
  */
 public class MenuMutasi extends javax.swing.JFrame {
+private String namaUser;
+private String noHP;
+private String nik;
 
-    /**
-     * Creates new form MenuMutasi
-     */
     public MenuMutasi() {
         initComponents();
+        setLocationRelativeTo(null);
     }
+        public MenuMutasi(String namaUser, String noHP, String nik){
+            this.namaUser = namaUser;
+            this.noHP = noHP;
+            this.nik = nik;
+            initComponents();
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -158,7 +165,7 @@ public class MenuMutasi extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
-        TampilanAwalWarga menuwarga = new TampilanAwalWarga();
+        TampilanAwalWarga menuwarga = new TampilanAwalWarga(namaUser,noHP,nik);
         menuwarga.setVisible(true);
         this.dispose();
         // TODO add your handling code here:

@@ -1,21 +1,27 @@
 package sijimpitGUI;
 
 
-/**
- *
- * @author ASUS
- */
+
 public class TampilanAwalWarga extends javax.swing.JFrame {
+ private String namaUser;
+ private String noHP;
+ private String nik;
 
 
     public TampilanAwalWarga() {
         initComponents();
+        setLocationRelativeTo(null);
 }
 
-        public TampilanAwalWarga(String namaUser) {
+        public TampilanAwalWarga(String namaUser, String noHP, String nik) {
             initComponents();
+            this.namaUser = namaUser;
+            this.noHP = noHP;
+            this.nik = nik;
             jLabel6.setText(namaUser); // Ubah sesuai nama label yang ingin kamu isi
 }
+        
+        
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -25,7 +31,6 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         btn_pembayaran = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -52,10 +57,6 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("I");
 
-        jButton1.setBackground(new java.awt.Color(0, 204, 51));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/user.png"))); // NOI18N
-        jButton1.setBorder(null);
-
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Nama User");
@@ -69,11 +70,9 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
                 .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(184, 184, 184)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addGap(41, 41, 41))
+                .addGap(163, 163, 163)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -84,15 +83,10 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(5, 5, 5)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(7, 7, 7))
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(7, 7, 7)))
                 .addGap(19, 19, 19))
         );
 
@@ -193,16 +187,19 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+public String getNamaUser() {
+            return namaUser;
+        }
 
     private void btn_pembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pembayaranActionPerformed
-        MenuPembayaranWarga pembayaran = new MenuPembayaranWarga();
+        MenuPembayaranWarga pembayaran = new MenuPembayaranWarga(namaUser,noHP,nik);
         pembayaran.setVisible(true);
         this.dispose();       
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_pembayaranActionPerformed
 
     private void btn_riwayatpembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_riwayatpembayaranActionPerformed
-       MenuMutasi mutasi = new MenuMutasi();
+       MenuMutasi mutasi = new MenuMutasi(namaUser,noHP,nik);
        mutasi.setVisible(true);
        this.dispose();
        // TODO add your handling code here:
@@ -248,12 +245,12 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
         }
     });
 }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_keluar;
     private javax.swing.JButton btn_pembayaran;
     private javax.swing.JButton btn_riwayatpembayaran;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -15,6 +15,7 @@ public class PembayaranSelesai extends javax.swing.JFrame {
      */
     public PembayaranSelesai() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

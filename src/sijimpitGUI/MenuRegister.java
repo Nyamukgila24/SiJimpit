@@ -11,6 +11,7 @@ public class MenuRegister extends javax.swing.JFrame {
 
     public MenuRegister() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
 
@@ -151,9 +152,9 @@ public class MenuRegister extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        
-         String nama = jTextField1.getText();
+    String nama = jTextField1.getText();
     String alamat = jTextField2.getText();
-    String nohp = jTextField3.getText();
+    String noHP = jTextField3.getText();
     String nik = jTextField4.getText();
     String password = new String(jPasswordField1.getPassword());
     String konfirmasiPassword = new String(jPasswordField2.getPassword());
@@ -165,11 +166,12 @@ public class MenuRegister extends javax.swing.JFrame {
     
     try {
         Connection conn = KoneksiDatabase.getConnection();
-        String sql = "INSERT INTO user (nama, nik, password, role) VALUES (?, ?, ?, 'user')";
+        String sql = "INSERT INTO user (nama, nik, noHP, password, role) VALUES (?, ?, ?, ?, 'user')";
         java.sql.PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, nama);
         pst.setString(2, nik);
-        pst.setString(3, password);
+        pst.setString(3, noHP);
+        pst.setString(4, password);
         pst.executeUpdate();
         JOptionPane.showMessageDialog(this, "Pendaftaran Berhasil!");
 
