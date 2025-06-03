@@ -5,6 +5,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.util.Date;
 
 
 public class MenuMutasi extends javax.swing.JFrame {
@@ -187,34 +188,43 @@ private void inisialisasiTahun() {
 }
 
  private void tampilkanDataBerdasarkanComboBox() {
-    String selected = (String) combo_tahun.getSelectedItem();
+     String selected = (String) combo_tahun.getSelectedItem();
+
+    if (this.nik == null || this.nik.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informasi NIK pengguna tidak tersedia. Tidak dapat memuat data.", "Error", JOptionPane.ERROR_MESSAGE);
+        Tbl_Mutasi.setModel(new DefaultTableModel());
+        return;
+    }
 
     if (selected == null || selected.equals("Semua Tahun")) {
-        tampilkanSemuaData();
+        tampilkanSemuaData(this.nik);
     } else {
         try {
-            int tahunFilter = Integer.parseInt(selected.substring(6)); 
-            tampilkanData(tahunFilter); 
+            int tahunFilter = Integer.parseInt(selected.substring(6));
+            tampilkanData(tahunFilter, this.nik);
         } catch (NumberFormatException e) {
             System.err.println("Format tahun tidak valid: " + selected);
             JOptionPane.showMessageDialog(this, "Format tahun tidak valid.", "Error", JOptionPane.ERROR_MESSAGE);
-            tampilkanSemuaData(); // Kembali ke semua data jika ada masalah
+            tampilkanSemuaData(this.nik);
         }
     }
 }
 
-    private void tampilkanData(int tahun) {
+    private void tampilkanData(int tahun, String nikPengguna) {
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("Tanggal");
     model.addColumn("Nominal");
     model.addColumn("Status");
 
-    String sql = "SELECT  tanggal, nominal, status FROM menu_pembayaran_warga "
-            + "WHERE YEAR(tanggal) = ? ORDER BY tanggal ASC";
+    String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga "
+            + "WHERE YEAR(tanggal) = ? AND nik = ? "
+            + "ORDER BY tanggal ASC";
 
-    try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+    try (Connection conn = sijimpit.Koneksi.getConnection();
+         PreparedStatement pst = conn.prepareStatement(sql)) {
 
         pst.setInt(1, tahun);
+        pst.setString(2, nikPengguna); 
 
         try (ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
@@ -228,46 +238,50 @@ private void inisialisasiTahun() {
                     formattedDate,
                     rs.getString("nominal"),
                     rs.getString("status")
-
                 });
             }
             Tbl_Mutasi.setModel(model);
         }
 
     } catch (SQLException e) {
-        System.err.println("Gagal ambil data berdasarkan tahun: " + e.getMessage());
+        System.err.println("Gagal ambil data berdasarkan tahun " + tahun + " untuk NIK " + nikPengguna + ": " + e.getMessage());
         JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
     }
 }
 
-    private void tampilkanSemuaData() {
+    private void tampilkanSemuaData(String nikPengguna) {
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("Tanggal");
     model.addColumn("Nominal");
     model.addColumn("Status");
-    String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga ORDER BY tanggal ASC";
+     String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga "
+            + "WHERE nik = ? "
+            + "ORDER BY tanggal ASC";
 
-    try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+     try (Connection conn = sijimpit.Koneksi.getConnection();
+         PreparedStatement pst = conn.prepareStatement(sql)) {
+        
+        pst.setString(1, nikPengguna);
 
-        while (rs.next()) {
-            java.sql.Date sqlDate = rs.getDate("tanggal");
-            String formattedDate = "";
-            if (sqlDate != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                formattedDate = sdf.format(new Date(sqlDate.getTime()));
+        try (ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                java.sql.Date sqlDate = rs.getDate("tanggal");
+                String formattedDate = "";
+                if (sqlDate != null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                }
+                model.addRow(new Object[]{
+                    formattedDate,
+                    rs.getString("nominal"),
+                    rs.getString("status")
+                });
             }
-
-            model.addRow(new Object[]{
-                formattedDate,
-                rs.getString("nominal"),
-                rs.getString("status")
-            });
+            Tbl_Mutasi.setModel(model);
         }
 
-        Tbl_Mutasi.setModel(model);
-
     } catch (SQLException e) {
-        System.err.println("Gagal ambil seluruh data: " + e.getMessage());
+        System.err.println("Gagal ambil seluruh data untuk NIK " + nikPengguna + ": " + e.getMessage());
         JOptionPane.showMessageDialog(this,
                 "Gagal mengambil seluruh data dari database: " + e.getMessage(),
                 "Error Database", JOptionPane.ERROR_MESSAGE);
