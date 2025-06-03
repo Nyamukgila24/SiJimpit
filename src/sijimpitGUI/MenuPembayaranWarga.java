@@ -270,8 +270,8 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     try (Connection conn = KoneksiDatabase.getConnection()) {
         String query = "INSERT INTO menu_pembayaran_warga (nama, nik, no_hp, tanggal, nominal) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setString(1, nik);
-        stmt.setString(2, nama);
+        stmt.setString(1, nama);
+        stmt.setString(2, nik);
         stmt.setString(3, noHp);
         stmt.setString(4, tanggal);
         stmt.setString(5, nominal);

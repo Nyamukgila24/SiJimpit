@@ -2,38 +2,40 @@
 package sijimpitGUI;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
+
 public class MenuMutasi extends javax.swing.JFrame {
-private String namaUser;
-private String noHP;
-private String nik;
+
+    private Connection conn;
+    private String namaUser;
+    private String noHP;
+    private String nik;
 
     public MenuMutasi() {
         initComponents();
-        combo_tahun.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-        String selected = (String) combo_tahun.getSelectedItem();
-        String tahun = java.time.Year.now().toString(); // default tahun ini
-
-        if (selected.equals("Transaksi Tahun Lalu")) {
-            int tahunLalu = java.time.Year.now().getValue() - 1;
-            tahun = Integer.toString(tahunLalu);
-        }
-
-        tampilkanDataMutasi(tahun);
+        inisialisasiTahun();
+        tampilkanDataBerdasarkanComboBox();
     }
-});
+        
+    public MenuMutasi(String namaUser, String noHP, String nik) {
+        this.namaUser = namaUser;
+        this.noHP = noHP;
+        this.nik = nik;
+        initComponents();
+        inisialisasiTahun();
+//        tampilkanSemuaData();
+        tampilkanDataBerdasarkanComboBox();
+
+    combo_tahun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tampilkanDataBerdasarkanComboBox();
+            }
+        });
         setLocationRelativeTo(null);
     }
-        public MenuMutasi(String namaUser, String noHP, String nik){
-            this.namaUser = namaUser;
-            this.noHP = noHP;
-            this.nik = nik;
-            initComponents();
-            String tahunSekarang = java.time.Year.now().toString();
-            tampilkanDataMutasi(tahunSekarang);
-        }
-        
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,7 +54,7 @@ private String nik;
         btn_unduh = new javax.swing.JButton();
         combo_tahun = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        Tbl_Mutasi = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(600, 500));
@@ -111,7 +113,7 @@ private String nik;
 
         combo_tahun.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Transaksi Tahun Ini", "Transaksi Tahun Lalu" }));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Tbl_Mutasi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -133,8 +135,8 @@ private String nik;
                 "Tanggal", "Nominal", "Status"
             }
         ));
-        jTable1.setShowGrid(true);
-        jScrollPane1.setViewportView(jTable1);
+        Tbl_Mutasi.setShowGrid(true);
+        jScrollPane1.setViewportView(Tbl_Mutasi);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -174,75 +176,147 @@ private String nik;
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+private void inisialisasiTahun() {
+    combo_tahun.removeAllItems();
 
-    private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
-        TampilanAwalWarga menuwarga = new TampilanAwalWarga(namaUser,noHP,nik);
-        menuwarga.setVisible(true);
-        this.dispose();
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_backActionPerformed
-private void tampilkanDataMutasi(String tahun) {
+    int tahunIni = java.time.Year.now().getValue();
+    combo_tahun.addItem("Semua Tahun");
+    combo_tahun.addItem("Tahun " + tahunIni);
+    combo_tahun.addItem("Tahun " + (tahunIni - 1));
+    combo_tahun.setSelectedItem("Tahun " + tahunIni);
+}
+
+ private void tampilkanDataBerdasarkanComboBox() {
+    String selected = (String) combo_tahun.getSelectedItem();
+
+    if (selected == null || selected.equals("Semua Tahun")) {
+        tampilkanSemuaData();
+    } else {
+        try {
+            int tahunFilter = Integer.parseInt(selected.substring(6)); 
+            tampilkanData(tahunFilter); 
+        } catch (NumberFormatException e) {
+            System.err.println("Format tahun tidak valid: " + selected);
+            JOptionPane.showMessageDialog(this, "Format tahun tidak valid.", "Error", JOptionPane.ERROR_MESSAGE);
+            tampilkanSemuaData(); // Kembali ke semua data jika ada masalah
+        }
+    }
+}
+
+    private void tampilkanData(int tahun) {
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("Tanggal");
     model.addColumn("Nominal");
     model.addColumn("Status");
 
-    try {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sijimpit", "root", "");
-        String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga WHERE nik = ? AND YEAR(tanggal) = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, nik); // NIK dari user login
-        stmt.setString(2, tahun);
-        ResultSet rs = stmt.executeQuery();
+    String sql = "SELECT  tanggal, nominal, status FROM menu_pembayaran_warga "
+            + "WHERE YEAR(tanggal) = ? ORDER BY tanggal ASC";
+
+    try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+
+        pst.setInt(1, tahun);
+
+        try (ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                java.sql.Date sqlDate = rs.getDate("tanggal");
+                String formattedDate = "";
+                if (sqlDate != null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                }
+                model.addRow(new Object[]{
+                    formattedDate,
+                    rs.getString("nominal"),
+                    rs.getString("status")
+
+                });
+            }
+            Tbl_Mutasi.setModel(model);
+        }
+
+    } catch (SQLException e) {
+        System.err.println("Gagal ambil data berdasarkan tahun: " + e.getMessage());
+        JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+    private void tampilkanSemuaData() {
+    DefaultTableModel model = new DefaultTableModel();
+    model.addColumn("Tanggal");
+    model.addColumn("Nominal");
+    model.addColumn("Status");
+    String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga ORDER BY tanggal ASC";
+
+    try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
         while (rs.next()) {
+            java.sql.Date sqlDate = rs.getDate("tanggal");
+            String formattedDate = "";
+            if (sqlDate != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                formattedDate = sdf.format(new Date(sqlDate.getTime()));
+            }
+
             model.addRow(new Object[]{
-                rs.getString("tanggal"),
+                formattedDate,
                 rs.getString("nominal"),
                 rs.getString("status")
             });
         }
-        jTable1.setModel(model);
-        conn.close();
+
+        Tbl_Mutasi.setModel(model);
+
     } catch (SQLException e) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Gagal ambil data mutasi: " + e.getMessage());
+        System.err.println("Gagal ambil seluruh data: " + e.getMessage());
+        JOptionPane.showMessageDialog(this,
+                "Gagal mengambil seluruh data dari database: " + e.getMessage(),
+                "Error Database", JOptionPane.ERROR_MESSAGE);
     }
 }
+
+    private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
+        TampilanAwalWarga menuwarga = new TampilanAwalWarga(namaUser, noHP, nik);
+        menuwarga.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btn_backActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+    /* Set the Nimbus look and feel */
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+     */
+    try {
+        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                break;
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MenuMutasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MenuMutasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MenuMutasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MenuMutasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MenuMutasi().setVisible(true);
-            }
-        });
+    } catch (ClassNotFoundException ex) {
+        java.util.logging.Logger.getLogger(MenuMutasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (InstantiationException ex) {
+        java.util.logging.Logger.getLogger(MenuMutasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+        java.util.logging.Logger.getLogger(MenuMutasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        java.util.logging.Logger.getLogger(MenuMutasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
+    //</editor-fold>
+
+    /* Create and display the form */
+    java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            new MenuMutasi().setVisible(true);
+        }
+    });
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable Tbl_Mutasi;
     private javax.swing.JButton btn_back;
     private javax.swing.JButton btn_unduh;
     private javax.swing.JComboBox<String> combo_tahun;
@@ -251,6 +325,5 @@ private void tampilkanDataMutasi(String tahun) {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
