@@ -230,7 +230,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("nominal");
         model.addColumn("tanggal");
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal,  tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? ORDER BY tanggal ASC")) {
+        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal,  tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND status = 'verifikasi' ORDER BY tanggal ASC")) {
 
             pst.setInt(1, bulan);
             try (ResultSet rs = pst.executeQuery()) {
@@ -267,7 +267,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("Nominal");
         model.addColumn("Tanggal");    
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga ORDER BY tanggal ASC")) {
+        try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE status = 'verifikasi' ORDER BY tanggal ASC")) {
 
             while (rs.next()) {
                 java.sql.Date sqlDate = rs.getDate("tanggal");

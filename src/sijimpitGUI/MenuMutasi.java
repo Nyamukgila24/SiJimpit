@@ -119,7 +119,7 @@ private String nik;
                 {null, null, null}
             },
             new String [] {
-                "Tanggal Konfirmasi", "Nominal", "Status"
+                "Tanggal", "Nominal", "Status"
             }
         ));
         jTable1.setShowGrid(true);

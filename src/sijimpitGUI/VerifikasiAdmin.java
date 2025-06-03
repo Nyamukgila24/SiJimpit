@@ -18,7 +18,7 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
     }
     
    private void loadData() {
-    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    DefaultTableModel model = (DefaultTableModel) tbl_verifikasi.getModel();
     model.setRowCount(0); // reset table
 
     try {
@@ -57,8 +57,8 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btn_back = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
+        tbl_verifikasi = new javax.swing.JTable();
+        btn_konfirmasi = new javax.swing.JButton();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
 
@@ -106,7 +106,7 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
                 .addGap(19, 19, 19))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_verifikasi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -125,14 +125,14 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tbl_verifikasi);
 
-        jButton5.setBackground(new java.awt.Color(0, 204, 51));
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("Konfirmasi");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btn_konfirmasi.setBackground(new java.awt.Color(0, 204, 51));
+        btn_konfirmasi.setForeground(new java.awt.Color(255, 255, 255));
+        btn_konfirmasi.setText("Konfirmasi");
+        btn_konfirmasi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btn_konfirmasiActionPerformed(evt);
             }
         });
 
@@ -147,7 +147,7 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
                 .addGap(27, 27, 27))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(176, 176, 176)
-                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btn_konfirmasi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(170, 170, 170))
         );
         jPanel1Layout.setVerticalGroup(
@@ -157,7 +157,7 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_konfirmasi, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(46, 46, 46))
         );
 
@@ -182,9 +182,9 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_backActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btn_konfirmasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_konfirmasiActionPerformed
      
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) tbl_verifikasi.getModel();
         try {
             Connection conn = KoneksiDatabase.getConnection();
             String sql = "UPDATE menu_pembayaran_warga SET status='verifikasi' WHERE nik=?";
@@ -205,7 +205,7 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Gagal memperbarui status.");
         }
     
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btn_konfirmasiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -245,12 +245,12 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_back;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton btn_konfirmasi;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tbl_verifikasi;
     // End of variables declaration//GEN-END:variables
 }
