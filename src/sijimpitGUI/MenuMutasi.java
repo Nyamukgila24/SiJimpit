@@ -6,6 +6,12 @@ import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.Date;
+import java.util.HashMap;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
+import sijimpit.Koneksi;
+import sijimpit.UserSession;
 
 
 public class MenuMutasi extends javax.swing.JFrame {
@@ -82,6 +88,11 @@ public class MenuMutasi extends javax.swing.JFrame {
         btn_unduh.setBackground(new java.awt.Color(0, 204, 51));
         btn_unduh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sijimpitGUI/SijimpitIcon/inbox (1).png"))); // NOI18N
         btn_unduh.setBorder(null);
+        btn_unduh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_unduhActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -293,6 +304,72 @@ private void inisialisasiTahun() {
         menuwarga.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_backActionPerformed
+
+    private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
+        try {
+        String reportPath = "src/jasper/Mutasi.jasper";
+        HashMap<String, Object> parameters = new HashMap<>();
+        String selectedYearItem = (String) combo_tahun.getSelectedItem();
+
+        // Validasi item yang dipilih
+        if (selectedYearItem == null || selectedYearItem.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Mohon pilih tahun terlebih dahulu.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Integer selectedYear = null; // Ubah ini menjadi Integer untuk memungkinkan null
+        boolean isAllYears = false;
+
+        // Proses string tahun berdasarkan formatnya
+        if (selectedYearItem.equals("Semua Tahun")) {
+            isAllYears = true;
+            // selectedYear akan tetap null, yang akan kita kirim sebagai parameter_tahun
+            System.out.println("Memilih 'Semua Tahun'. Parameter tahun dikirim sebagai NULL.");
+        } else if (selectedYearItem.startsWith("Tahun ")) {
+            try {
+                String yearString = selectedYearItem.substring("Tahun ".length());
+                selectedYear = Integer.parseInt(yearString);
+                System.out.println("Nilai parameter tahun yang dikirim ke Jasper: " + selectedYear);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Format tahun tidak valid. Mohon pilih tahun yang benar (contoh: Tahun 2023).", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Pilihan tahun tidak dikenali. Mohon pilih tahun dari daftar.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Tambahkan parameter tahun ke HashMap
+        parameters.put("parameter_tahun", selectedYear); // selectedYear sudah null atau integer
+
+        // --- BAGIAN YANG PERLU DITAMBAHKAN/DIEDIT ---
+        // 1. Ambil ID pengguna dari UserSession
+        Integer loggedInUserId = sijimpit.UserSession.getLoggedInUserId();
+
+        // 2. Lakukan validasi, pastikan user ID ada
+        if (loggedInUserId == null) {
+            JOptionPane.showMessageDialog(this, "Anda harus login untuk melihat laporan ini. ID Pengguna tidak ditemukan.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return; // Hentikan proses jika user ID tidak ada
+        }
+
+        // 3. Masukkan ID pengguna sebagai parameter ke JasperReports
+        // Pastikan nama parameter ini (misal: "user") sama persis dengan yang didefinisikan di JRXML Anda.
+        // Berdasarkan diskusi terakhir, Anda menyebutkan nama parameter adalah "user".
+        parameters.put("user", loggedInUserId);
+        System.out.println("Nilai parameter user yang dikirim ke Jasper (dari UserSession): " + loggedInUserId);
+        // --- AKHIR BAGIAN YANG PERLU DITAMBAHKAN/DIEDIT ---
+
+
+        Connection conn = Koneksi.getConnection(); // Pastikan Koneksi.getConnection() mengembalikan objek Connection yang valid
+        JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
+        JasperViewer viewer = new JasperViewer(print, false);
+        viewer.setVisible(true);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btn_unduhActionPerformed
 
     /**
      * @param args the command line arguments

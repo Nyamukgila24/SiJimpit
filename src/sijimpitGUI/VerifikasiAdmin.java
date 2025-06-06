@@ -23,18 +23,19 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
 
     try {
         Connection conn = KoneksiDatabase.getConnection();
-        String sql = "SELECT nama, nik, status FROM menu_pembayaran_warga";
+        String sql = "SELECT nama, nik, tanggal, status FROM menu_pembayaran_warga";
         PreparedStatement ps = conn.prepareStatement(sql);
         java.sql.ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
             String nama = rs.getString("nama"); 
             String nik = rs.getString("nik");
+            String tanggal = rs.getString("tanggal");
             String status = rs.getString("status");
 
             boolean verifikasi = "verifikasi".equals(status); // true jika status == verifikasi
 
-            model.addRow(new Object[]{nama, nik, verifikasi});
+            model.addRow(new Object[]{nama, nik, tanggal, verifikasi});
         }
     } catch (Exception e) {
         e.printStackTrace();
@@ -108,17 +109,17 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
 
         tbl_verifikasi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Nama", "NIK", "Status"
+                "Nama", "NIK", "Tanggal", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -179,7 +180,6 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
         TampilanAwalAdmin menuadmin = new TampilanAwalAdmin();
         menuadmin.setVisible(true);
         this.dispose();
-        // TODO add your handling code here:
     }//GEN-LAST:event_btn_backActionPerformed
 
     private void btn_konfirmasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_konfirmasiActionPerformed
@@ -191,7 +191,7 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
             PreparedStatement ps = conn.prepareStatement(sql);
 
             for (int i = 0; i < model.getRowCount(); i++) {
-                Boolean isChecked = (Boolean) model.getValueAt(i, 2);
+                Boolean isChecked = (Boolean) model.getValueAt(i, 3);
                 if (isChecked != null && isChecked) {
                     String nik = (String) model.getValueAt(i, 1);
                     ps.setString(1, nik);

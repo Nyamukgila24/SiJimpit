@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import sijimpit.KoneksiDatabase;
 import javax.swing.JOptionPane;
+import sijimpit.KoneksiDatabase;
+import sijimpit.UserSession;
 
 public class MenuLogin extends javax.swing.JFrame {
 
@@ -12,7 +14,7 @@ public class MenuLogin extends javax.swing.JFrame {
     public MenuLogin() {
         initComponents();
         setLocationRelativeTo(null);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btn_daftar.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
         jButton2ActionPerformed(evt);
     }
@@ -30,9 +32,9 @@ public class MenuLogin extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        btn_masuk = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btn_daftar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(600, 400));
@@ -53,18 +55,18 @@ public class MenuLogin extends javax.swing.JFrame {
 
         jPasswordField1.setPreferredSize(new java.awt.Dimension(315, 35));
 
-        jButton1.setText("Masuk");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_masuk.setText("Masuk");
+        btn_masuk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_masukActionPerformed(evt);
             }
         });
 
         jLabel5.setText("Belum punya akun?");
 
-        jButton2.setForeground(new java.awt.Color(102, 204, 255));
-        jButton2.setText("Daftar");
-        jButton2.setBorder(null);
+        btn_daftar.setForeground(new java.awt.Color(102, 204, 255));
+        btn_daftar.setText("Daftar");
+        btn_daftar.setBorder(null);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -81,9 +83,9 @@ public class MenuLogin extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel5)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_daftar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1))
+                            .addComponent(btn_masuk))
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING))
@@ -105,9 +107,9 @@ public class MenuLogin extends javax.swing.JFrame {
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(btn_masuk)
                     .addComponent(jLabel5)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_daftar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(59, Short.MAX_VALUE))
         );
 
@@ -125,7 +127,7 @@ public class MenuLogin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btn_masukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_masukActionPerformed
     
         String nik = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());
@@ -162,7 +164,7 @@ public class MenuLogin extends javax.swing.JFrame {
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, e.getMessage());
     }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btn_masukActionPerformed
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
     MenuRegister registerPage = new MenuRegister(); 
     registerPage.setVisible(true); 
@@ -204,8 +206,8 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btn_daftar;
+    private javax.swing.JButton btn_masuk;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

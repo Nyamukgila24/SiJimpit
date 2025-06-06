@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.sql.Statement;
 import java.text.MessageFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttribute;
@@ -220,6 +221,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         for (String b : bulan) {
             combo_bulan.addItem("Bulan " + b);
         }
+        combo_bulan.addItem("Tahun Lalu");
     }
 
     private void tampilkanData(int bulan) {
@@ -265,7 +267,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("NIK");
         model.addColumn("No. HP");
         model.addColumn("Nominal");
-        model.addColumn("Tanggal");    
+        model.addColumn("Tanggal");
 
         try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE status = 'verifikasi' ORDER BY tanggal ASC")) {
 
@@ -329,6 +331,45 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         }
     }
 
+    private void tampilkanDataTahunLalu() {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Nama");
+        model.addColumn("NIK");
+        model.addColumn("No. HP");
+        model.addColumn("Nominal");
+        model.addColumn("Tanggal");
+
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int lastYear = currentYear - 1; // Mendapatkan tahun lalu
+
+        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY tanggal ASC")) {
+
+            pst.setInt(1, lastYear);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    java.sql.Date sqlDate = rs.getDate("tanggal");
+                    String formattedDate = "";
+                    if (sqlDate != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                        formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                    }
+                    model.addRow(new Object[]{
+                        rs.getString("nama"),
+                        rs.getString("nik"),
+                        rs.getString("no_hp"),
+                        rs.getString("nominal"),
+                        formattedDate
+                    });
+                }
+                Tbl_Keuangan.setModel(model);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Gagal ambil data tahun lalu: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Gagal mengambil data tahun lalu dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
         TampilanAwalAdmin admin = new TampilanAwalAdmin();
         admin.setVisible(true);
@@ -338,36 +379,53 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     private void combo_bulanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_bulanActionPerformed
         String selectedMonth = (String) combo_bulan.getSelectedItem();
         if (selectedMonth != null && !selectedMonth.trim().isEmpty()) {
-            int bulanAngka = ubahBulanKeAngka(selectedMonth);
-            if (bulanAngka != -1) {
-                tampilkanData(bulanAngka);
+            if (selectedMonth.equals("Tahun Lalu")) {
+                tampilkanDataTahunLalu(); // Metode baru untuk menampilkan data tahun lalu
             } else {
-                JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid.", "Error", JOptionPane.WARNING_MESSAGE);
+                int bulanAngka = ubahBulanKeAngka(selectedMonth);
+                if (bulanAngka != -1) {
+                    tampilkanData(bulanAngka);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid.", "Error", JOptionPane.WARNING_MESSAGE);
+                }
             }
         }
     }//GEN-LAST:event_combo_bulanActionPerformed
 
     private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
-         try {
+        try {
             String reportPath = "src/jasper/CatatanKeuangan.jasper";
             HashMap<String, Object> parameters = new HashMap<>();
             String selectedMonth = (String) combo_bulan.getSelectedItem();
-            int monthNumber;
+            parameters.put("parameter_bulan", null);
+            parameters.put("parameter_tahun", null);
 
-            monthNumber = ubahBulanKeAngka(selectedMonth);
-            if (monthNumber != -1) { 
-                parameters.put("parameter_bulan", monthNumber);
-                System.out.println("Parameters yang dikirim ke Jasper: " + parameters);
-                System.out.println("Nilai parameter_bulan: " + parameters.get("parameter_bulan"));
-
+            if (selectedMonth != null && !selectedMonth.trim().isEmpty()) {
+                if (selectedMonth.equals("Tahun Lalu")) {
+                    int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                    int lastYear = currentYear - 1;
+                    parameters.put("parameter_tahun", lastYear);
+                    System.out.println("Parameters yang dikirim ke Jasper (Tahun Lalu): " + parameters);
+                } else {
+                    int monthNumber = ubahBulanKeAngka(selectedMonth);
+                    if (monthNumber != -1) {
+                        parameters.put("parameter_bulan", monthNumber);
+                        // Untuk bulan tertentu, ambil tahun saat ini
+                        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                        parameters.put("parameter_tahun", currentYear);
+                        System.out.println("Parameters yang dikirim ke Jasper (Bulan): " + parameters);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid. Mohon pilih bulan yang benar.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid. Mohon pilih bulan yang benar.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+                
             }
 
             Connection conn = Koneksi.getConnection();
             JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
-            JasperViewer viewer = new JasperViewer(print, false); 
+            JasperViewer viewer = new JasperViewer(print, false);
             viewer.setVisible(true);
 
         } catch (Exception e) {
