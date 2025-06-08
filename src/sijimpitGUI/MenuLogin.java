@@ -144,10 +144,9 @@ public class MenuLogin extends javax.swing.JFrame {
             String role = rs.getString("role");  // Ambil role dari database
             
             if (role.equalsIgnoreCase("user")) {
-                Integer userId = rs.getInt("id");
                 String namaUser = rs.getString("nama");
                 String noHP = rs.getString("NoHp");
-                UserSession.setLoggedInUser(userId, namaUser, nik);
+
                 TampilanAwalWarga userPage = new TampilanAwalWarga(namaUser, noHP, nik);
                 userPage.setVisible(true);
                 this.dispose();
