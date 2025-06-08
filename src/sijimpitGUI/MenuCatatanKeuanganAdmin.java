@@ -231,9 +231,11 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("no_hp");
         model.addColumn("nominal");
         model.addColumn("tanggal");
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal,  tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND status = 'verifikasi' ORDER BY tanggal ASC")) {
-
+        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY tanggal ASC")) {
+            pst.setInt(1, bulan);
+            pst.setInt(2, currentYear);
             pst.setInt(1, bulan);
             try (ResultSet rs = pst.executeQuery()) {
 
@@ -420,7 +422,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                     }
                 }
             } else {
-                
+
             }
 
             Connection conn = Koneksi.getConnection();
