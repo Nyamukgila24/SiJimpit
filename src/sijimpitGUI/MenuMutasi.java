@@ -2,6 +2,7 @@ package sijimpitGUI;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.Date;
@@ -145,7 +146,7 @@ public class MenuMutasi extends javax.swing.JFrame {
                 "Tanggal", "Nominal", "Status"
             }
         ));
-        Tbl_Mutasi.setShowGrid(true);
+        Tbl_Mutasi.setShowGrid(false);
         jScrollPane1.setViewportView(Tbl_Mutasi);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -189,34 +190,43 @@ public class MenuMutasi extends javax.swing.JFrame {
 private void inisialisasiTahun() {
         combo_tahun.removeAllItems();
 
-        int tahunIni = java.time.Year.now().getValue();
-        combo_tahun.addItem("Semua Tahun");
-        combo_tahun.addItem("Tahun " + tahunIni);
-        combo_tahun.addItem("Tahun " + (tahunIni - 1));
-        combo_tahun.setSelectedItem("Tahun " + tahunIni);
+        int tahunIni = java.time.Year.now().getValue(); 
+        combo_tahun.addItem("Transaksi Tahun Ini"); 
+        combo_tahun.addItem("Transaksi Tahun Lalu"); 
+
+        combo_tahun.setSelectedItem("Transaksi Tahun Ini");
+
     }
 
     private void tampilkanDataBerdasarkanComboBox() {
-        String selected = (String) combo_tahun.getSelectedItem();
+        String selectedOption = (String) combo_tahun.getSelectedItem();
 
         if (this.nik == null || this.nik.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Informasi NIK pengguna tidak tersedia. Tidak dapat memuat data.", "Error", JOptionPane.ERROR_MESSAGE);
-            Tbl_Mutasi.setModel(new DefaultTableModel());
+            Tbl_Mutasi.setModel(new DefaultTableModel()); // Kosongkan tabel jika NIK tidak ada
             return;
         }
 
-        if (selected == null || selected.equals("Semua Tahun")) {
-            tampilkanSemuaData(this.nik);
+        int tahunUntukFilter;
+        int tahunSaatIni = java.time.Year.now().getValue();
+
+        if (selectedOption == null) {
+            // Ini bisa terjadi jika combo_tahun kosong atau belum diinisialisasi
+            JOptionPane.showMessageDialog(this, "Pilihan tahun tidak ditemukan. Menggunakan tahun saat ini.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            tahunUntukFilter = tahunSaatIni; // Default ke tahun saat ini
+        } else if (selectedOption.equals("Transaksi Tahun Ini")) {
+            tahunUntukFilter = tahunSaatIni;
+            System.out.println("Filter JTable: Transaksi Tahun Ini (" + tahunUntukFilter + ")");
+        } else if (selectedOption.equals("Transaksi Tahun Lalu")) {
+            tahunUntukFilter = tahunSaatIni - 1; // Tahun sebelumnya
+            System.out.println("Filter JTable: Transaksi Tahun Lalu (" + tahunUntukFilter + ")");
         } else {
-            try {
-                int tahunFilter = Integer.parseInt(selected.substring(6));
-                tampilkanData(tahunFilter, this.nik);
-            } catch (NumberFormatException e) {
-                System.err.println("Format tahun tidak valid: " + selected);
-                JOptionPane.showMessageDialog(this, "Format tahun tidak valid.", "Error", JOptionPane.ERROR_MESSAGE);
-                tampilkanSemuaData(this.nik);
-            }
+
+            JOptionPane.showMessageDialog(this, "Pilihan tahun tidak valid. Menampilkan data tahun ini.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            tahunUntukFilter = tahunSaatIni;
+            System.err.println("Pilihan combo_tahun tidak dikenal: " + selectedOption);
         }
+        tampilkanData(tahunUntukFilter, this.nik);
     }
 
     private void tampilkanData(int tahun, String nikPengguna) {
@@ -224,7 +234,6 @@ private void inisialisasiTahun() {
         model.addColumn("Tanggal");
         model.addColumn("Nominal");
         model.addColumn("Status");
-
         String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga "
                 + "WHERE YEAR(tanggal) = ? AND nik = ? "
                 + "ORDER BY tanggal ASC";
@@ -257,43 +266,6 @@ private void inisialisasiTahun() {
         }
     }
 
-    private void tampilkanSemuaData(String nikPengguna) {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Tanggal");
-        model.addColumn("Nominal");
-        model.addColumn("Status");
-        String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga "
-                + "WHERE nik = ? "
-                + "ORDER BY tanggal ASC";
-
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
-
-            pst.setString(1, nikPengguna);
-
-            try (ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
-                    java.sql.Date sqlDate = rs.getDate("tanggal");
-                    String formattedDate = "";
-                    if (sqlDate != null) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                        formattedDate = sdf.format(new Date(sqlDate.getTime()));
-                    }
-                    model.addRow(new Object[]{
-                        formattedDate,
-                        rs.getString("nominal"),
-                        rs.getString("status")
-                    });
-                }
-                Tbl_Mutasi.setModel(model);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Gagal ambil seluruh data untuk NIK " + nikPengguna + ": " + e.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    "Gagal mengambil seluruh data dari database: " + e.getMessage(),
-                    "Error Database", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
         TampilanAwalWarga menuwarga = new TampilanAwalWarga(namaUser, noHP, nik);
@@ -305,30 +277,29 @@ private void inisialisasiTahun() {
         try {
             String reportPath = "src/jasper/Mutasi.jasper";
             HashMap<String, Object> parameters = new HashMap<>();
-            String selectedYearItem = (String) combo_tahun.getSelectedItem();
+            String selectedYearOption = (String) combo_tahun.getSelectedItem();
 
-            if (selectedYearItem == null || selectedYearItem.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Mohon pilih tahun terlebih dahulu.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            if (selectedYearOption == null || selectedYearOption.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Mohon pilih tahun terlebih dahulu (Transaksi Tahun Ini atau Transaksi Tahun Lalu).", "Peringatan", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             Integer selectedYear = null;
-            boolean isAllYears = false;
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-            if (selectedYearItem.equals("Semua Tahun")) {
-                isAllYears = true;
-                System.out.println("Memilih 'Semua Tahun'. Parameter tahun dikirim sebagai NULL.");
-            } else if (selectedYearItem.startsWith("Tahun ")) {
-                try {
-                    String yearString = selectedYearItem.substring("Tahun ".length());
-                    selectedYear = Integer.parseInt(yearString);
-                    System.out.println("Nilai parameter tahun yang dikirim ke Jasper: " + selectedYear);
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Format tahun tidak valid. Mohon pilih tahun yang benar (contoh: Tahun 2024).", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+            if (selectedYearOption.equals("Transaksi Tahun Ini")) {
+                selectedYear = currentYear;
+                System.out.println("Memilih 'Transaksi Tahun Ini'. Parameter tahun dikirim: " + selectedYear);
+            } else if (selectedYearOption.equals("Transaksi Tahun Lalu")) {
+                selectedYear = currentYear - 1;
+                System.out.println("Memilih 'Transaksi Tahun Lalu'. Parameter tahun dikirim: " + selectedYear);
             } else {
-                JOptionPane.showMessageDialog(this, "Pilihan tahun tidak dikenali. Mohon pilih tahun dari daftar.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Pilihan tahun tidak valid. Mohon pilih 'Tahun Ini' atau 'Tahun Lalu'.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (selectedYear == null) {
+                JOptionPane.showMessageDialog(this, "Kesalahan internal: Tahun tidak dapat ditentukan.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -336,9 +307,11 @@ private void inisialisasiTahun() {
             String loggedInUserNik = sijimpit.UserSession.getLoggedInUserNik();
             System.out.println("DEBUG: NIK dari UserSession = " + loggedInUserNik);
             if (loggedInUserNik == null || loggedInUserNik.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "NIK pengguna tidak ditemukan. Laporan tidak dapat dibuat.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             parameters.put("nik_filter", loggedInUserNik);
-            System.out.println("Nilai parameter nik_filter yang dikirim ke Jasper (dari UserSession): " + loggedInUserNik);
+            System.out.println("Nilai parameter nik_filter yang dikirim ke Jasper: " + loggedInUserNik);
 
             Connection conn = Koneksi.getConnection();
             JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
@@ -349,6 +322,7 @@ private void inisialisasiTahun() {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }//GEN-LAST:event_btn_unduhActionPerformed
 
     /**
