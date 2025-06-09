@@ -98,7 +98,7 @@ public class MenuRegister extends javax.swing.JFrame {
                         .addComponent(jTextField4)
                         .addComponent(jPasswordField1)
                         .addComponent(jPasswordField2)))
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

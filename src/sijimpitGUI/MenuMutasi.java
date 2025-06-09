@@ -170,7 +170,7 @@ public class MenuMutasi extends javax.swing.JFrame {
                 .addGap(13, 13, 13)
                 .addComponent(combo_tahun)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
                 .addGap(60, 60, 60))
         );
 
