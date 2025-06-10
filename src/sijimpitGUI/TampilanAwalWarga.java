@@ -12,7 +12,6 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
 }
-
         public TampilanAwalWarga(String namaUser, String noHP, String nik) {
             initComponents();
             this.namaUser = namaUser;

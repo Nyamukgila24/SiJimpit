@@ -189,7 +189,7 @@ private String nik;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
-        MenuPembayaranWarga menuwarga = new MenuPembayaranWarga();
+        MenuPembayaranWarga menuwarga = new MenuPembayaranWarga(namaUser,noHP,nik);
         menuwarga.setVisible(true);
         this.dispose();
         // TODO add your handling code here:
