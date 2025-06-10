@@ -12,7 +12,7 @@ Aplikasi SiJimpit dirancang untuk mempermudah pencatatan dan pelaporan dana jimp
 - Transparasi keuangan
 - Kemudahan pembuatan laporan keuangan
 
-## Anggota kelompok
+## Nama kelompok dan job description
 
 - Aini Intan Saylendra (24050974063) (anggota)
 - Iqbal Amri Sya'bana (24050974068) (ketua kelompok)
