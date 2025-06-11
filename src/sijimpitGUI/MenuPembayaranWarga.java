@@ -23,9 +23,9 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
             this.noHP = noHP;
             this.nik = nik;
             initComponents();
-            jTextField2.setText(namaUser);
-            jTextField1.setText(nik);
-            jTextField3.setText(noHP);
+            kolom_nama.setText(namaUser);
+            kolom_nik.setText(nik);
+            kolom_noHP.setText(noHP);
         }
 
     @SuppressWarnings("unchecked")
@@ -41,17 +41,17 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         btn_back = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        kolom_nik = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        kolom_nama = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        kolom_noHP = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        kolom_tanggal = new javax.swing.JTextField();
         btn_lanjutkanpembayaran3 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        kolom_nominal = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(300, 400));
@@ -101,27 +101,27 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Nama");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        kolom_nik.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                kolom_nikActionPerformed(evt);
             }
         });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("NIK");
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        kolom_nama.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                kolom_namaActionPerformed(evt);
             }
         });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("No. HP");
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        kolom_noHP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                kolom_noHPActionPerformed(evt);
             }
         });
 
@@ -141,9 +141,9 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Tanggal");
 
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        kolom_tanggal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                kolom_tanggalActionPerformed(evt);
             }
         });
 
@@ -160,9 +160,9 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel11.setText("Nominal");
 
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        kolom_nominal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                kolom_nominalActionPerformed(evt);
             }
         });
 
@@ -181,12 +181,12 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(jLabel4)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4)
+                            .addComponent(kolom_nama, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
+                            .addComponent(kolom_nik)
+                            .addComponent(kolom_noHP)
+                            .addComponent(kolom_tanggal)
                             .addComponent(jLabel11)
-                            .addComponent(jTextField5)))
+                            .addComponent(kolom_nominal)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(169, 169, 169)
                         .addComponent(btn_lanjutkanpembayaran3, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -199,7 +199,7 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(kolom_nama, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(58, 58, 58)
@@ -208,19 +208,19 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(kolom_nik, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(kolom_noHP, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(kolom_tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(kolom_nominal, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(btn_lanjutkanpembayaran3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -240,28 +240,28 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void kolom_nikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kolom_nikActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_kolom_nikActionPerformed
     
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void kolom_namaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kolom_namaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_kolom_namaActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void kolom_noHPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kolom_noHPActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_kolom_noHPActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void kolom_tanggalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kolom_tanggalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_kolom_tanggalActionPerformed
 
     private void btn_lanjutkanpembayaran3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_lanjutkanpembayaran3ActionPerformed
-    String nama = jTextField2.getText().trim();
-    String nik = jTextField1.getText().trim();
-    String noHp = jTextField3.getText().trim();
-    String tanggal = jTextField4.getText().trim();
-    String nominal = jTextField5.getText().trim();
+    String nama = kolom_nama.getText().trim();
+    String nik = kolom_nik.getText().trim();
+    String noHp = kolom_noHP.getText().trim();
+    String tanggal = kolom_tanggal.getText().trim();
+    String nominal = kolom_nominal.getText().trim();
     
     if (nama.isEmpty() || nik.isEmpty() || noHp.isEmpty() || tanggal.isEmpty() || nominal.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
@@ -297,9 +297,9 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btn_backActionPerformed
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+    private void kolom_nominalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kolom_nominalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
+    }//GEN-LAST:event_kolom_nominalActionPerformed
 
 
     /**
@@ -357,10 +357,10 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField kolom_nama;
+    private javax.swing.JTextField kolom_nik;
+    private javax.swing.JTextField kolom_noHP;
+    private javax.swing.JTextField kolom_nominal;
+    private javax.swing.JTextField kolom_tanggal;
     // End of variables declaration//GEN-END:variables
 }
