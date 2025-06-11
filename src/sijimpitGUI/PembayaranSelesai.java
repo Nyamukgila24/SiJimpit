@@ -2,8 +2,16 @@
 package sijimpitGUI;
 
 /**
- *
- * @author ASUS
+ * Kelas PembayaranSelesai adalah jendela GUI (JFrame) yang menampilkan informasi
+ * bahwa proses pembayaran sudah selesai. Digunakan oleh pengguna setelah melakukan
+ * pembayaran untuk memberikan instruksi selanjutnya.
+ * 
+ * Atribut:
+ * - namaUser : Nama pengguna
+ * - noHP     : Nomor HP pengguna
+ * - nik      : NIK pengguna
+ * 
+ * Tampilan ini memiliki tombol untuk kembali ke halaman utama pengguna (TampilanAwalWarga).
  */
 public class PembayaranSelesai extends javax.swing.JFrame {
     private String namaUser;

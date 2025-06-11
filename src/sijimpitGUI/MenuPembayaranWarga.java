@@ -6,18 +6,22 @@ import sijimpit.KoneksiDatabase;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-
+/**
+ * MenuPembayaranWarga adalah jendela input data pembayaran warga.
+ * Data yang dimasukkan akan disimpan ke dalam database dan diteruskan ke halaman konfirmasi barcode.
+ */
 public class MenuPembayaranWarga extends javax.swing.JFrame {
-    
+    // Pre-fill input dengan data user
     private String namaUser;
     private String noHP;
     private String nik;
 
+    // Konstruktor default (tidak menerima parameter)
     public MenuPembayaranWarga() {
         initComponents();
         setLocationRelativeTo(null);
     }
-    
+    // Konstruktor dengan parameter data user dari sesi login
         public MenuPembayaranWarga(String namaUser, String noHP, String nik){
             this.namaUser = namaUser;
             this.noHP = noHP;
@@ -257,16 +261,22 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     }//GEN-LAST:event_kolom_tanggalActionPerformed
 
     private void btn_lanjutkanpembayaran3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_lanjutkanpembayaran3ActionPerformed
+
+    // Tombol aksi untuk menyimpan data ke database saat tombol "Lanjutkan" ditekan
+     // Tombol aksi untuk menyimpan data ke database saat tombol "Lanjutkan" ditekan
+
     String nama = kolom_nama.getText().trim();
     String nik = kolom_nik.getText().trim();
     String noHp = kolom_noHP.getText().trim();
     String tanggal = kolom_tanggal.getText().trim();
     String nominal = kolom_nominal.getText().trim();
-    
+
+     // Validasi input tidak boleh kosong
     if (nama.isEmpty() || nik.isEmpty() || noHp.isEmpty() || tanggal.isEmpty() || nominal.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
         return;
     }
+    // Proses insert data ke database
     try (Connection conn = KoneksiDatabase.getConnection()) {
         String query = "INSERT INTO menu_pembayaran_warga (nama, nik, no_hp, tanggal, nominal) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(query);
@@ -276,12 +286,12 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
         stmt.setString(4, tanggal);
         stmt.setString(5, nominal);
 
-        stmt.executeUpdate();
+        stmt.executeUpdate();// Eksekusi query insert
         JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
-        
+         // Setelah berhasil, pindah ke halaman konfirmasi barcode
         BarcodePembayaran konfirmasi = new BarcodePembayaran(namaUser,noHP,nik);
         konfirmasi.setVisible(true);
-        this.dispose();
+        this.dispose();// Tutup form saat ini
         
         } catch (SQLException e) {
         e.printStackTrace();
@@ -289,11 +299,11 @@ public class MenuPembayaranWarga extends javax.swing.JFrame {
     }
         
     }//GEN-LAST:event_btn_lanjutkanpembayaran3ActionPerformed
-
+// Tombol kembali ke halaman sebelumnya
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
         TampilanAwalWarga menuwarga = new TampilanAwalWarga(namaUser,noHP,nik);
         menuwarga.setVisible(true);
-        this.dispose();
+        this.dispose();// Tutup form saat ini
         
     }//GEN-LAST:event_btn_backActionPerformed
 

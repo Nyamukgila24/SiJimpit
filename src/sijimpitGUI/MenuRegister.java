@@ -8,13 +8,14 @@ import javax.swing.JOptionPane;
 
 public class MenuRegister extends javax.swing.JFrame {
 
-
+// Konstruktor utama: inisialisasi komponen GUI
     public MenuRegister() {
         initComponents();
         setLocationRelativeTo(null);
     }
 
-
+   // Inisialisasi semua komponen GUI (dihasilkan oleh GUI Builder NetBeans)
+        // Termasuk label, text field, button, layout, dll.
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -149,9 +150,9 @@ public class MenuRegister extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+ // Fungsi yang dijalankan saat tombol "Daftar" ditekan
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
+       // Ambil data dari input pengguna
     String nama = jTextField1.getText();
     String alamat = jTextField2.getText();
     String noHP = jTextField3.getText();
@@ -159,13 +160,16 @@ public class MenuRegister extends javax.swing.JFrame {
     String password = new String(jPasswordField1.getPassword());
     String konfirmasiPassword = new String(jPasswordField2.getPassword());
     
+     // Validasi: pastikan password dan konfirmasi cocok
     if (!password.equals(konfirmasiPassword)) {
         javax.swing.JOptionPane.showMessageDialog(this, "Password dan Konfirmasi Password tidak cocok!");
         return;
     }
     
     try {
+        // Koneksi ke database menggunakan helper class KoneksiDatabase
         Connection conn = KoneksiDatabase.getConnection();
+        // Query untuk menyimpan data pengguna baru ke tabel "user"
         String sql = "INSERT INTO user (nama, nik, noHP, password, role) VALUES (?, ?, ?, ?, 'user')";
         java.sql.PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, nama);
@@ -173,19 +177,21 @@ public class MenuRegister extends javax.swing.JFrame {
         pst.setString(3, noHP);
         pst.setString(4, password);
         pst.executeUpdate();
+        // Beri notifikasi bahwa pendaftaran berhasil
         JOptionPane.showMessageDialog(this, "Pendaftaran Berhasil!");
 
-    // Pindah ke login
+     // Alihkan pengguna ke halaman login
         MenuLogin loginPage = new MenuLogin();
         loginPage.setVisible(true);
         this.dispose();
 
 } catch (Exception e) {
+    // Tampilkan pesan kesalahan jika gagal mendaftar
     JOptionPane.showMessageDialog(this, "Pendaftaran Gagal! " + e.getMessage());
 }
 
 }
-
+// Fungsi tambahan untuk mengosongkan form input
 private void kosongkanForm() {
     jTextField1.setText("");
     jTextField2.setText("");
@@ -222,14 +228,14 @@ private void kosongkanForm() {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+         // Jalankan aplikasi (tampilkan jendela registrasi)
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MenuRegister().setVisible(true);
             }
         });
     }
-
+// Deklarasi komponen GUI
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

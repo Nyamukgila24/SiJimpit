@@ -14,14 +14,18 @@ public class MenuLogin extends javax.swing.JFrame {
     public MenuLogin() {
         initComponents();
         setLocationRelativeTo(null);
+        // Menambahkan event listener untuk tombol daftar
         btn_daftar.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jButton2ActionPerformed(evt);
+        jButton2ActionPerformed(evt);// Pindah ke halaman pendaftaran
     }
 });
     }
 
-
+/**
+     * Method ini otomatis dihasilkan oleh NetBeans GUI Editor.
+     * Berisi inisialisasi komponen dan pengaturan layout tampilan.
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -126,14 +130,19 @@ public class MenuLogin extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+  /**
+     * Method yang dijalankan saat tombol "Masuk" diklik.
+     * Melakukan proses autentikasi user berdasarkan input NIK dan password.
+     */
     private void btn_masukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_masukActionPerformed
     
-        String nik = jTextField1.getText();
-        String password = new String(jPasswordField1.getPassword());
+        String nik = jTextField1.getText();// Ambil input NIK
+        String password = new String(jPasswordField1.getPassword());// Ambil input password
         
         try {
+        // Ambil koneksi ke database
         Connection con = KoneksiDatabase.getConnection();
+         // Query SQL untuk mengecek kredensial pengguna
         String sql = "SELECT * FROM user WHERE nik = ? AND password = ?";
         java.sql.PreparedStatement pst = con.prepareStatement(sql);
         pst.setString(1, nik);
@@ -143,23 +152,30 @@ public class MenuLogin extends javax.swing.JFrame {
                if (rs.next()) {  // Jika data ditemukan
             String role = rs.getString("role");  // Ambil role dari database
             
+             // Login berdasarkan role
             if (role.equalsIgnoreCase("user")) {
                 int id = rs.getInt("id");
                 String namaUser = rs.getString("nama");
                 String noHP = rs.getString("NoHp");
+                // Simpan data session pengguna
                 UserSession.setLoggedInUser(id, namaUser, nik);
+                
+                // Tampilkan halaman utama untuk warga// Tampilkan halaman utama untuk warga
                 TampilanAwalWarga userPage = new TampilanAwalWarga(namaUser, noHP, nik);
                 userPage.setVisible(true);
                 this.dispose();
+                
             } else if (role.equalsIgnoreCase("admin")) {
-                // Jika role admin
+                // Tampilkan halaman utama untuk admin
                 TampilanAwalAdmin adminPage = new TampilanAwalAdmin();  // Anda buat tampilan admin sendiri
                 adminPage.setVisible(true);
                 this.dispose(); // Tutup halaman login
             } else {
+                // Role tidak dikenali
                 JOptionPane.showMessageDialog(this, "Role tidak dikenali!");
             }
         } else {
+                   // Jika tidak ditemukan data cocok
             JOptionPane.showMessageDialog(this, "Nik atau Password salah!");
         }
 
@@ -167,14 +183,23 @@ public class MenuLogin extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, e.getMessage());
     }
     }//GEN-LAST:event_btn_masukActionPerformed
-private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+  /**
+     * Method ini dijalankan saat tombol "Daftar" diklik.
+     * Akan membuka tampilan form pendaftaran.
+     */
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
     MenuRegister registerPage = new MenuRegister(); 
     registerPage.setVisible(true); 
     this.dispose(); 
 }
     /**
+     * Method utama untuk menjalankan GUI.
+     */
+    /**
      * @param args the command line arguments
      */
+    
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -199,7 +224,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        // Menjalankan form login
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MenuLogin().setVisible(true);
