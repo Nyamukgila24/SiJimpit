@@ -74,7 +74,6 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(600, 500));
         setMinimumSize(new java.awt.Dimension(300, 400));
-        setPreferredSize(new java.awt.Dimension(600, 500));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -163,7 +162,6 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
             }
         ));
         Tbl_Keuangan.setShowGrid(false);
-        Tbl_Keuangan.setShowVerticalLines(true);
         jScrollPane1.setViewportView(Tbl_Keuangan);
 
         combo_bulan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
@@ -233,7 +231,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("tanggal");
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY tanggal ASC")) {
+        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY nik ASC")) {
             pst.setInt(1, bulan);
             pst.setInt(2, currentYear);
             pst.setInt(1, bulan);
@@ -271,7 +269,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("Nominal");
         model.addColumn("Tanggal");
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE status = 'verifikasi' ORDER BY tanggal ASC")) {
+        try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE status = 'verifikasi' ORDER BY nik ASC")) {
 
             while (rs.next()) {
                 java.sql.Date sqlDate = rs.getDate("tanggal");
@@ -344,7 +342,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int lastYear = currentYear - 1; // Mendapatkan tahun lalu
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY tanggal ASC")) {
+        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY nik ASC")) {
 
             pst.setInt(1, lastYear);
             try (ResultSet rs = pst.executeQuery()) {

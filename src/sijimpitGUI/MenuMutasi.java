@@ -67,6 +67,7 @@ public class MenuMutasi extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(300, 400));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setPreferredSize(new java.awt.Dimension(600, 500));
 
         jPanel2.setBackground(new java.awt.Color(0, 204, 51));
 
@@ -158,10 +159,11 @@ public class MenuMutasi extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(combo_tahun, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(368, 368, 368))
-                    .addComponent(jScrollPane1))
-                .addGap(39, 39, 39))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(combo_tahun, 0, 161, Short.MAX_VALUE)
+                        .addGap(407, 407, 407))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
