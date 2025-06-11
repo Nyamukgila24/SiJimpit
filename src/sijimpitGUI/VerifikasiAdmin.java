@@ -1,7 +1,8 @@
 package sijimpitGUI;
+
 import java.sql.Connection;
 import sijimpit.KoneksiDatabase;
-import javax.swing.JOptionPane;
+import javax.swing.JOptionPane; 
 import javax.swing.table.DefaultTableModel;
 import java.sql.PreparedStatement;
 
@@ -11,38 +12,37 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
      * Creates new form VerifikasiAdmin
      */
     public VerifikasiAdmin() {
-        initComponents();
-        setLocationRelativeTo(null);
-        loadData();
-
+        initComponents(); // Menginisialisasi komponen GUI
+        setLocationRelativeTo(null); // Menempatkan jendela di tengah layar
+        loadData(); // Memuat data awal ke tabel verifikasi
     }
-    
-   private void loadData() {
-    DefaultTableModel model = (DefaultTableModel) tbl_verifikasi.getModel();
-    model.setRowCount(0); // reset table
 
-    try {
-        Connection conn = KoneksiDatabase.getConnection();
-        String sql = "SELECT nama, nik, tanggal, status FROM menu_pembayaran_warga";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        java.sql.ResultSet rs = ps.executeQuery();
+    private void loadData() {
+        DefaultTableModel model = (DefaultTableModel) tbl_verifikasi.getModel(); // Mendapatkan model tabel
+        model.setRowCount(0); // Mengosongkan isi tabel sebelum memuat data baru
 
-        while (rs.next()) {
-            String nama = rs.getString("nama"); 
-            String nik = rs.getString("nik");
-            String tanggal = rs.getString("tanggal");
-            String status = rs.getString("status");
+        try {
+            Connection conn = KoneksiDatabase.getConnection(); // Mendapatkan koneksi ke database
+            String sql = "SELECT nama, nik, tanggal, status FROM menu_pembayaran_warga"; // Query SQL untuk mengambil data
+            PreparedStatement ps = conn.prepareStatement(sql);
+            java.sql.ResultSet rs = ps.executeQuery(); // Menjalankan query dan mendapatkan hasil
 
-            boolean verifikasi = "verifikasi".equals(status); // true jika status == verifikasi
+            while (rs.next()) { // Iterasi setiap baris hasil query
+                String nama = rs.getString("nama");
+                String nik = rs.getString("nik");
+                String tanggal = rs.getString("tanggal");
+                String status = rs.getString("status");
 
-            model.addRow(new Object[]{nama, nik, tanggal, verifikasi});
+                boolean verifikasi = "verifikasi".equals(status); // True jika status == verifikasi
+                model.addRow(new Object[]{nama, nik, tanggal, verifikasi});
+            }
+        // Menangani kesalahan database
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Gagal memuat data dari database.");
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Gagal memuat data dari database.");
     }
-}
-   
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -183,28 +183,28 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_backActionPerformed
 
     private void btn_konfirmasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_konfirmasiActionPerformed
-     
+
         DefaultTableModel model = (DefaultTableModel) tbl_verifikasi.getModel();
         try {
             Connection conn = KoneksiDatabase.getConnection();
-            String sql = "UPDATE menu_pembayaran_warga SET status='verifikasi' WHERE nik=?";
+            String sql = "UPDATE menu_pembayaran_warga SET status='verifikasi' WHERE nik=?"; // Query SQL untuk memperbarui status pembayaran
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            for (int i = 0; i < model.getRowCount(); i++) {
+            for (int i = 0; i < model.getRowCount(); i++) { // Loop setiap baris tabel
                 Boolean isChecked = (Boolean) model.getValueAt(i, 3);
-                if (isChecked != null && isChecked) {
+                if (isChecked != null && isChecked) { // Jika checkbox dicentang (true)
                     String nik = (String) model.getValueAt(i, 1);
                     ps.setString(1, nik);
-                    ps.executeUpdate();
+                    ps.executeUpdate(); // Update status di database
                 }
             }
             JOptionPane.showMessageDialog(this, "Data berhasil diverifikasi.");
-            loadData(); // refresh data
+            loadData(); // Muat ulang data tabel
+        // Menangani kesalahan
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Gagal memperbarui status.");
         }
-    
     }//GEN-LAST:event_btn_konfirmasiActionPerformed
 
     /**

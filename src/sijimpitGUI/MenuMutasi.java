@@ -15,25 +15,24 @@ import sijimpit.UserSession;
 
 public class MenuMutasi extends javax.swing.JFrame {
 
-    private Connection conn;
-    private String namaUser;
-    private String noHP;
-    private String nik;
+    private Connection conn; // Variabel untuk menyimpan objek koneksi database
+    private String namaUser; // Variabel untuk menyimpan nama pengguna
+    private String noHP;     // Variabel untuk menyimpan nomor HP
+    private String nik;      // Variabel untuk menyimpan Nomor Induk Kependudukan (NIK)
 
     public MenuMutasi() {
-        initComponents();
-        inisialisasiTahun();
-        tampilkanDataBerdasarkanComboBox();
+        initComponents();    // Menginisialisasi komponen-komponen UI yang dibuat di GUI
+        inisialisasiTahun(); // Memanggil metode untuk mengisi atau mengatur komponen terkait tahun
+        tampilkanDataBerdasarkanComboBox(); // Memanggil metode untuk menampilkan data berdasarkan pilihan di combobox
     }
 
     public MenuMutasi(String namaUser, String noHP, String nik) {
-        this.namaUser = namaUser;
-        this.noHP = noHP;
-        this.nik = nik;
+        this.namaUser = namaUser; // Mengatur nilai 'namaUser' dari argumen ke variabel kelas
+        this.noHP = noHP;         // Mengatur nilai 'noHP' dari argumen ke variabel kelas
+        this.nik = nik;           // Mengatur nilai 'nik' dari argumen ke variabel kelas
         initComponents();
         inisialisasiTahun();
-//        tampilkanSemuaData();
-        tampilkanDataBerdasarkanComboBox();
+        tampilkanDataBerdasarkanComboBox(); // Memanggil metode untuk menampilkan data berdasarkan pilihan di combobox
 
         combo_tahun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -190,78 +189,79 @@ public class MenuMutasi extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 private void inisialisasiTahun() {
-        combo_tahun.removeAllItems();
-
-        int tahunIni = java.time.Year.now().getValue(); 
-        combo_tahun.addItem("Transaksi Tahun Ini"); 
-        combo_tahun.addItem("Transaksi Tahun Lalu"); 
-
-        combo_tahun.setSelectedItem("Transaksi Tahun Ini");
-
+        combo_tahun.removeAllItems(); // Menghapus semua item yang ada di combobox tahun
+        int tahunIni = java.time.Year.now().getValue(); // Mendapatkan tahun saat ini
+        combo_tahun.addItem("Transaksi Tahun Ini"); // Menambahkan opsi 'Transaksi Tahun Ini'
+        combo_tahun.addItem("Transaksi Tahun Lalu"); // Menambahkan opsi 'Transaksi Tahun Lalu'
+        combo_tahun.setSelectedItem("Transaksi Tahun Ini"); // Mengatur pilihan default ke 'Transaksi Tahun Ini'
     }
 
     private void tampilkanDataBerdasarkanComboBox() {
-        String selectedOption = (String) combo_tahun.getSelectedItem();
+        String selectedOption = (String) combo_tahun.getSelectedItem(); // Mendapatkan opsi yang dipilih dari combobox tahun
 
-        if (this.nik == null || this.nik.isEmpty()) {
+        if (this.nik == null || this.nik.isEmpty()) { // Memeriksa apakah NIK pengguna tersedia
             JOptionPane.showMessageDialog(this, "Informasi NIK pengguna tidak tersedia. Tidak dapat memuat data.", "Error", JOptionPane.ERROR_MESSAGE);
             Tbl_Mutasi.setModel(new DefaultTableModel()); // Kosongkan tabel jika NIK tidak ada
-            return;
+            return; // Menghentikan eksekusi metode
         }
 
-        int tahunUntukFilter;
-        int tahunSaatIni = java.time.Year.now().getValue();
+        int tahunUntukFilter; // Variabel untuk menyimpan tahun yang akan digunakan sebagai filter
+        int tahunSaatIni = java.time.Year.now().getValue(); // Mendapatkan tahun saat ini
 
         if (selectedOption == null) {
             // Ini bisa terjadi jika combo_tahun kosong atau belum diinisialisasi
             JOptionPane.showMessageDialog(this, "Pilihan tahun tidak ditemukan. Menggunakan tahun saat ini.", "Peringatan", JOptionPane.WARNING_MESSAGE);
             tahunUntukFilter = tahunSaatIni; // Default ke tahun saat ini
+            // Memfilter tahun
         } else if (selectedOption.equals("Transaksi Tahun Ini")) {
             tahunUntukFilter = tahunSaatIni;
             System.out.println("Filter JTable: Transaksi Tahun Ini (" + tahunUntukFilter + ")");
         } else if (selectedOption.equals("Transaksi Tahun Lalu")) {
-            tahunUntukFilter = tahunSaatIni - 1; // Tahun sebelumnya
+            tahunUntukFilter = tahunSaatIni - 1;
             System.out.println("Filter JTable: Transaksi Tahun Lalu (" + tahunUntukFilter + ")");
+            // Jika opsi yang dipilih tidak valid
         } else {
-
             JOptionPane.showMessageDialog(this, "Pilihan tahun tidak valid. Menampilkan data tahun ini.", "Peringatan", JOptionPane.WARNING_MESSAGE);
             tahunUntukFilter = tahunSaatIni;
             System.err.println("Pilihan combo_tahun tidak dikenal: " + selectedOption);
         }
-        tampilkanData(tahunUntukFilter, this.nik);
+        tampilkanData(tahunUntukFilter, this.nik); // Memanggil metode untuk menampilkan data berdasarkan tahun filter dan NIK pengguna
     }
 
     private void tampilkanData(int tahun, String nikPengguna) {
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel(); // Membuat model tabel baru
+        // Menambahkan kolom ke tabel
         model.addColumn("Tanggal");
         model.addColumn("Nominal");
         model.addColumn("Status");
         String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga "
                 + "WHERE YEAR(tanggal) = ? AND nik = ? "
-                + "ORDER BY tanggal ASC";
+                + "ORDER BY tanggal ASC"; // Query SQL untuk mengambil data berdasarkan tahun dan NIK
 
+        // Menjalin koneksi ke database dan menyiapkan query SQL
         try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
 
-            pst.setInt(1, tahun);
-            pst.setString(2, nikPengguna);
+            pst.setInt(1, tahun); // Mengatur parameter tahun pada query
+            pst.setString(2, nikPengguna); // Mengatur parameter NIK pada query
 
-            try (ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
+            try (ResultSet rs = pst.executeQuery()) { // Menjalankan query dan mendapatkan hasil
+                while (rs.next()) { // Iterasi setiap baris hasil query
                     java.sql.Date sqlDate = rs.getDate("tanggal");
                     String formattedDate = "";
                     if (sqlDate != null) {
                         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                        formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                        formattedDate = sdf.format(new Date(sqlDate.getTime())); // Memformat tanggal
                     }
+                    // Menambahkan data ke model tabel
                     model.addRow(new Object[]{
                         formattedDate,
                         rs.getString("nominal"),
                         rs.getString("status")
                     });
                 }
-                Tbl_Mutasi.setModel(model);
+                Tbl_Mutasi.setModel(model); // Mengatur agar tabel menampilkan isi dari 'model' ini
             }
-
+        // Menangani kesalahan database
         } catch (SQLException e) {
             System.err.println("Gagal ambil data berdasarkan tahun " + tahun + " untuk NIK " + nikPengguna + ": " + e.getMessage());
             JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
@@ -277,9 +277,9 @@ private void inisialisasiTahun() {
 
     private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
         try {
-            String reportPath = "src/jasper/Mutasi.jasper";
-            HashMap<String, Object> parameters = new HashMap<>();
-            String selectedYearOption = (String) combo_tahun.getSelectedItem();
+            String reportPath = "src/jasper/Mutasi.jasper"; // Lokasi file template laporan JasperReports
+            HashMap<String, Object> parameters = new HashMap<>(); // Peta untuk parameter laporan
+            String selectedYearOption = (String) combo_tahun.getSelectedItem(); // Ambil pilihan tahun dari combobox
 
             if (selectedYearOption == null || selectedYearOption.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Mohon pilih tahun terlebih dahulu (Transaksi Tahun Ini atau Transaksi Tahun Lalu).", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -304,27 +304,29 @@ private void inisialisasiTahun() {
                 JOptionPane.showMessageDialog(this, "Kesalahan internal: Tahun tidak dapat ditentukan.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
-            parameters.put("tahun", selectedYear);
-            String loggedInUserNik = sijimpit.UserSession.getLoggedInUserNik();
+            // Menambahkan parameter tahun
+            parameters.put("tahun", selectedYear); 
+            String loggedInUserNik = sijimpit.UserSession.getLoggedInUserNik(); // Mengambil nik pengguna
             System.out.println("DEBUG: NIK dari UserSession = " + loggedInUserNik);
             if (loggedInUserNik == null || loggedInUserNik.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "NIK pengguna tidak ditemukan. Laporan tidak dapat dibuat.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            parameters.put("nik_filter", loggedInUserNik);
+            // Menambahkan parameter NIK
+            parameters.put("nik_filter", loggedInUserNik); 
             System.out.println("Nilai parameter nik_filter yang dikirim ke Jasper: " + loggedInUserNik);
 
-            Connection conn = Koneksi.getConnection();
-            JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
-            JasperViewer viewer = new JasperViewer(print, false);
+            Connection conn = Koneksi.getConnection(); // Mendapatkan koneksi database
+            JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn); // Isi laporan dengan data
+            // Tampilkan laporan
+            JasperViewer viewer = new JasperViewer(print, false); 
             viewer.setVisible(true);
-
+            
+        // Menangani kesalahan pembuatan laporan
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }//GEN-LAST:event_btn_unduhActionPerformed
 
     /**

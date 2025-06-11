@@ -185,22 +185,19 @@ public class TampilanAwalAdmin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_verifikasipembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_verifikasipembayaranActionPerformed
-        // TODO add your handling code here:
-        VerifikasiAdmin verifikasi = new VerifikasiAdmin();
-        verifikasi.setVisible(true);
-        this.dispose();
+        VerifikasiAdmin verifikasi = new VerifikasiAdmin(); // Membuat objek baru dari kelas 'VerifikasiAdmin'
+        verifikasi.setVisible(true); // Mengatur frame 'VerifikasiAdmin' menjadi terlihat
+        this.dispose(); // Menutup frame saat ini (frame di mana tombol ini berada)
     }//GEN-LAST:event_btn_verifikasipembayaranActionPerformed
 
     private void btn_keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_keluarActionPerformed
-        dispose();
-        // TODO add your handling code here:
+        dispose(); // Menutup semua frame
     }//GEN-LAST:event_btn_keluarActionPerformed
 
     private void btn_catatankeuanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_catatankeuanganActionPerformed
         MenuCatatanKeuanganAdmin keuangan = new MenuCatatanKeuanganAdmin();
         keuangan.setVisible(true);
         this.dispose();
-        // TODO add your handling code here:
     }//GEN-LAST:event_btn_catatankeuanganActionPerformed
 
     /**

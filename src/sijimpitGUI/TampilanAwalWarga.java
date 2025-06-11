@@ -1,26 +1,23 @@
 package sijimpitGUI;
 
-
-
 public class TampilanAwalWarga extends javax.swing.JFrame {
- private String namaUser;
- private String noHP;
- private String nik;
 
+    private String namaUser;
+    private String noHP;
+    private String nik;
 
     public TampilanAwalWarga() {
         initComponents();
         setLocationRelativeTo(null);
-}
-        public TampilanAwalWarga(String namaUser, String noHP, String nik) {
-            initComponents();
-            this.namaUser = namaUser;
-            this.noHP = noHP;
-            this.nik = nik;
-            jLabel6.setText(namaUser); // Ubah sesuai nama label yang ingin kamu isi
-}
-        
-        
+    }
+
+    public TampilanAwalWarga(String namaUser, String noHP, String nik) {
+        initComponents();
+        this.namaUser = namaUser;
+        this.noHP = noHP;
+        this.nik = nik;
+        jLabel6.setText(namaUser); // Ubah sesuai nama label yang ingin kamu isi
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -187,26 +184,24 @@ public class TampilanAwalWarga extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 public String getNamaUser() {
-            return namaUser;
-        }
+        return namaUser; //mengambil variabel 'namaUser'
+    }
 
     private void btn_pembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pembayaranActionPerformed
-        MenuPembayaranWarga pembayaran = new MenuPembayaranWarga(namaUser,noHP,nik);
-        pembayaran.setVisible(true);
-        this.dispose();       
-        // TODO add your handling code here:
+        // Membuat objek baru dari frame 'MenuPembayaranWarga'.
+        MenuPembayaranWarga pembayaran = new MenuPembayaranWarga(namaUser, noHP, nik); // 'namaUser', 'noHP', dan 'nik' merupakan data user yang sedang login
+        pembayaran.setVisible(true); // Mengatur frame 'MenuPembayaranWarga' menjadi terlihat
+        this.dispose(); // Menutup frame saat ini (frame di mana tombol ini berada)
     }//GEN-LAST:event_btn_pembayaranActionPerformed
 
     private void btn_riwayatpembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_riwayatpembayaranActionPerformed
-       MenuMutasi mutasi = new MenuMutasi(namaUser,noHP,nik);
-       mutasi.setVisible(true);
-       this.dispose();
-       // TODO add your handling code here:
+        MenuMutasi mutasi = new MenuMutasi(namaUser, noHP, nik);
+        mutasi.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_riwayatpembayaranActionPerformed
 
     private void btn_keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_keluarActionPerformed
-       dispose();  
-       // TODO add your handling code here:
+        dispose(); // Menutup semua frame
     }//GEN-LAST:event_btn_keluarActionPerformed
 
     /**
@@ -237,14 +232,14 @@ public String getNamaUser() {
         //</editor-fold>
 
         /* Create and display the form */
-         java.awt.EventQueue.invokeLater(new Runnable() {
+        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-            // Gunakan Session untuk mengakses data login
-            new TampilanAwalWarga().setVisible(true);
-        }
-    });
-}
-    
+                // Gunakan Session untuk mengakses data login
+                new TampilanAwalWarga().setVisible(true);
+            }
+        });
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_keluar;

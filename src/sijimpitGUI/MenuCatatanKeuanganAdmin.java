@@ -201,41 +201,44 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void inisialisasiBulan() {
-        combo_bulan.removeAllItems();
+        combo_bulan.removeAllItems(); // Menghapus semua item yang ada di combobox bulan
 
         String[] bulan = {
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"
         };
         for (String b : bulan) {
-            combo_bulan.addItem("Bulan " + b);
+            combo_bulan.addItem("Bulan " + b); // Mengisi combobox dengan nama-nama bulan
         }
-        combo_bulan.addItem("Tahun Lalu");
+        combo_bulan.addItem("Tahun Lalu"); // Menambahkan opsi 'Tahun Lalu'
     }
 
     private void tampilkanData(int bulan) {
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel(); // Membuat model tabel baru
+        // Menambahkan kolom ke tabel
         model.addColumn("nama");
         model.addColumn("nik");
         model.addColumn("no_hp");
         model.addColumn("nominal");
         model.addColumn("tanggal");
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR); // Mendapatkan tahun saat ini
+        
+        // Membuka koneksi database dan menyiapkan query SQL untuk mengambil data pembayaran terverifikasi berdasarkan bulan dan tahun
         try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY nik ASC")) {
-            pst.setInt(1, bulan);
-            pst.setInt(2, currentYear);
-            pst.setInt(1, bulan);
-            try (ResultSet rs = pst.executeQuery()) {
+            pst.setInt(1, bulan); // Mengatur parameter bulan pada query SQL
+            pst.setInt(2, currentYear); // Mengatur parameter tahun pada query SQL
+            pst.setInt(1, bulan);  // Memeriksa duplikasi parameter bulan
 
-                while (rs.next()) {
+            try (ResultSet rs = pst.executeQuery()) { // Menjalankan query dan mendapatkan hasil
+                while (rs.next()) { // Iterasi setiap baris hasil query
                     java.sql.Date sqlDate = rs.getDate("tanggal");
                     String formattedDate = "";
                     if (sqlDate != null) {
                         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                        formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                        formattedDate = sdf.format(new Date(sqlDate.getTime())); // Memformat tanggal
                     }
-                    model.addRow(new Object[]{
+                    // Menambahkan data ke model tabel
+                    model.addRow(new Object[]{ 
                         rs.getString("nama"),
                         rs.getString("nik"),
                         rs.getString("no_hp"),
@@ -243,9 +246,9 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                         formattedDate
                     });
                 }
-                Tbl_Keuangan.setModel(model);
+                Tbl_Keuangan.setModel(model); // Mengatur agar tabel menampilkan isi dari 'model' ini
             }
-
+        // Menangani kesalahan database
         } catch (SQLException e) {
             System.err.println("Gagal ambil data berdasarkan bulan: " + e.getMessage());
             JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
@@ -289,9 +292,10 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         if (selectedMonth == null) {
             return -1;
         }
-        String trimmedSelectedMonth = selectedMonth.trim();
+        String trimmedSelectedMonth = selectedMonth.trim(); // Membersihkan spasi di awal/akhir string
         System.out.println("DEBUG: trimmedSelectedMonth: '" + trimmedSelectedMonth + "'");
-
+        
+        // Mengubah nama bulan string menjadi angka bulan (1-12)
         switch (trimmedSelectedMonth) {
             case "Bulan Januari":
                 return 1;
@@ -318,7 +322,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
             case "Bulan Desember":
                 return 12;
             default:
-                return -1;
+                return -1; // Menginformasikan bahwa nama bulan tidak ditemukan atau tidak valid
         }
     }
 
@@ -330,7 +334,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         model.addColumn("Nominal");
         model.addColumn("Tanggal");
 
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR); // Mendapatkan tahun saat ini
         int lastYear = currentYear - 1; // Mendapatkan tahun lalu
 
         try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY nik ASC")) {
@@ -385,9 +389,9 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
 
     private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
         try {
-            String reportPath = "src/jasper/CatatanKeuangan.jasper";
-            HashMap<String, Object> parameters = new HashMap<>();
-            String selectedMonth = (String) combo_bulan.getSelectedItem();
+            String reportPath = "src/jasper/CatatanKeuangan.jasper"; // Mendefinisikan lokasi template laporan
+            HashMap<String, Object> parameters = new HashMap<>(); // Peta untuk parameter laporan
+            String selectedMonth = (String) combo_bulan.getSelectedItem(); // Ambil pilihan tahun dari combobox
             parameters.put("parameter_bulan", null);
             parameters.put("parameter_tahun", null);
 
@@ -399,26 +403,27 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                     System.out.println("Parameters yang dikirim ke Jasper (Tahun Lalu): " + parameters);
                 } else {
                     int monthNumber = ubahBulanKeAngka(selectedMonth);
-                    if (monthNumber != -1) {
-                        parameters.put("parameter_bulan", monthNumber);
-                        // Untuk bulan tertentu, ambil tahun saat ini
+                    if (monthNumber != -1) { // Mengubah nama bulan menjadi angka
+                        parameters.put("parameter_bulan", monthNumber); // Mengatur parameter bulan
                         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                        parameters.put("parameter_tahun", currentYear);
+                        parameters.put("parameter_tahun", currentYear); // Mengatur parameter tahun saat ini
                         System.out.println("Parameters yang dikirim ke Jasper (Bulan): " + parameters);
                     } else {
                         JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid. Mohon pilih bulan yang benar.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
+                        return; // Menghentikan proses jika bulan tidak valid
                     }
                 }
             } else {
 
             }
-
-            Connection conn = Koneksi.getConnection();
-            JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
+            
+            Connection conn = Koneksi.getConnection(); // Mendapatkan koneksi database
+            JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn); // Isi laporan dengan data
+            // Tampilkan laporan
             JasperViewer viewer = new JasperViewer(print, false);
             viewer.setVisible(true);
-
+            
+        // Menangani kesalahan pembuatan laporan
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
