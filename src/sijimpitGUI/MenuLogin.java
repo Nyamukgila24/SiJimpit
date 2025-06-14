@@ -68,7 +68,7 @@ public class MenuLogin extends javax.swing.JFrame {
 
         jLabel5.setText("Belum punya akun?");
 
-        btn_daftar.setForeground(new java.awt.Color(102, 204, 255));
+        btn_daftar.setForeground(new java.awt.Color(51, 102, 255));
         btn_daftar.setText("Daftar");
         btn_daftar.setBorder(null);
 
@@ -87,7 +87,7 @@ public class MenuLogin extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel5)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btn_daftar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_daftar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btn_masuk))
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)

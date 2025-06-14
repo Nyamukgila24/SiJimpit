@@ -7,44 +7,45 @@ package sijimpit;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.swing.JOptionPane; /**
-         *
-         * @author Aini Intan Saylendra
-         */
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author Aini Intan Saylendra
+ */
 
 public class Koneksi {
-  // Nama driver JDBC yang digunakan untuk koneksi ke MySQL
+
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-     // URL database: menunjuk ke database 'sijimpit' di localhost pada port default 3306
     private static final String DB_URL = "jdbc:mysql://localhost:3306/sijimpit";
-    // Username dan password default MySQL (disesuaikan sesuai konfigurasi lokal Anda)
     private static final String USER = "root";
     private static final String PASS = "";
 
-        /**
+    /**
      * Method untuk mendapatkan koneksi ke database.
-     * 
-     * @return Objek Connection yang bisa digunakan untuk interaksi dengan database
+     *
+     * @return Objek Connection yang bisa digunakan untuk interaksi dengan
+     * database
      * @throws SQLException jika koneksi gagal dibuat
      */
-
     public static Connection getConnection() throws SQLException {
         Connection connection = null;
 
         try {
             // Memuat driver JDBC secara eksplisit
             Class.forName(JDBC_DRIVER);
-             // Mencoba membuat koneksi ke database menggunakan DriverManager
+            // Mencoba membuat koneksi ke database menggunakan DriverManager
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
             return connection;
         } catch (ClassNotFoundException e) {
             // Jika driver JDBC tidak ditemukan di classpath
             System.err.println("Driver JDBC tidak ditemukan: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Driver database tidak ditemukan. Pastikan library MySQL/JDBC ada di project Libraries.", "Error Koneksi", JOptionPane.ERROR_MESSAGE);
-            throw new SQLException("Driver JDBC tidak ditemukan.", e); 
+            throw new SQLException("Driver JDBC tidak ditemukan.", e);
         } catch (SQLException e) {
             System.err.println("Gagal membuat koneksi ke database: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Gagal terkoneksi ke database: " + e.getMessage() + "\nPeriksa pengaturan database Anda (URL, Username, Password) atau pastikan server MySQL berjalan.", "Error Koneksi", JOptionPane.ERROR_MESSAGE);
-            throw e;            
+            throw e;
+        }
+    }
 }
-} }

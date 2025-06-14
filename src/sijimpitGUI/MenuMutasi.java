@@ -15,14 +15,26 @@ import sijimpit.UserSession;
 
 public class MenuMutasi extends javax.swing.JFrame {
 
-    private Connection conn; // Variabel untuk menyimpan objek koneksi database
     private String namaUser; // Variabel untuk menyimpan nama pengguna
     private String noHP;     // Variabel untuk menyimpan nomor HP
     private String nik;      // Variabel untuk menyimpan Nomor Induk Kependudukan (NIK)
+    private int currentPage = 1; // Halaman saat ini, dimulai dari 1
+    private int rowsPerPage = 20; // Jumlah baris per halaman, bisa disesuaikan (misal 20)
+    private int totalRows = 0;    // Total baris data yang ditemukan
+    private int totalPages = 0;   // Total halaman yang tersedia
 
     public MenuMutasi() {
+        setLocationRelativeTo(null);
         initComponents();    // Menginisialisasi komponen-komponen UI yang dibuat di GUI
         inisialisasiTahun(); // Memanggil metode untuk mengisi atau mengatur komponen terkait tahun
+
+        combo_tahun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                // Saat tahun diubah, reset ke halaman 1
+                currentPage = 1;
+                tampilkanDataBerdasarkanComboBox();
+            }
+        });
         tampilkanDataBerdasarkanComboBox(); // Memanggil metode untuk menampilkan data berdasarkan pilihan di combobox
     }
 
@@ -31,15 +43,16 @@ public class MenuMutasi extends javax.swing.JFrame {
         this.noHP = noHP;         // Mengatur nilai 'noHP' dari argumen ke variabel kelas
         this.nik = nik;           // Mengatur nilai 'nik' dari argumen ke variabel kelas
         initComponents();
+        setLocationRelativeTo(null);
         inisialisasiTahun();
-        tampilkanDataBerdasarkanComboBox(); // Memanggil metode untuk menampilkan data berdasarkan pilihan di combobox
 
-        combo_tahun.addActionListener(new java.awt.event.ActionListener() {
+        combo_tahun.addActionListener(new java.awt.event.ActionListener() { // Listener combo_tahun
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                currentPage = 1; // Saat tahun diubah, reset ke halaman 1
                 tampilkanDataBerdasarkanComboBox();
             }
         });
-        setLocationRelativeTo(null);
+        tampilkanDataBerdasarkanComboBox();
     }
 
     /**
@@ -60,6 +73,9 @@ public class MenuMutasi extends javax.swing.JFrame {
         combo_tahun = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tbl_Mutasi = new javax.swing.JTable();
+        btn_sebelumnya = new javax.swing.JButton();
+        btn_berikutnya = new javax.swing.JButton();
+        lblPageStatus = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(600, 500));
@@ -149,6 +165,24 @@ public class MenuMutasi extends javax.swing.JFrame {
         Tbl_Mutasi.setShowGrid(false);
         jScrollPane1.setViewportView(Tbl_Mutasi);
 
+        btn_sebelumnya.setBackground(new java.awt.Color(255, 255, 0));
+        btn_sebelumnya.setText("Data Sebelumnya");
+        btn_sebelumnya.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_sebelumnyaActionPerformed(evt);
+            }
+        });
+
+        btn_berikutnya.setBackground(new java.awt.Color(255, 255, 0));
+        btn_berikutnya.setText("Data Berikutnya");
+        btn_berikutnya.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_berikutnyaActionPerformed(evt);
+            }
+        });
+
+        lblPageStatus.setText("Menampilkan jumlah halaman");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -158,11 +192,19 @@ public class MenuMutasi extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(combo_tahun, 0, 161, Short.MAX_VALUE)
-                        .addGap(407, 407, 407))))
+                        .addGap(407, 407, 407))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(102, 102, 102)
+                        .addComponent(btn_sebelumnya)
+                        .addGap(75, 75, 75)
+                        .addComponent(btn_berikutnya, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblPageStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,8 +213,14 @@ public class MenuMutasi extends javax.swing.JFrame {
                 .addGap(13, 13, 13)
                 .addComponent(combo_tahun)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
-                .addGap(60, 60, 60))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblPageStatus)
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_sebelumnya)
+                    .addComponent(btn_berikutnya))
+                .addGap(33, 33, 33))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -202,6 +250,7 @@ private void inisialisasiTahun() {
         if (this.nik == null || this.nik.isEmpty()) { // Memeriksa apakah NIK pengguna tersedia
             JOptionPane.showMessageDialog(this, "Informasi NIK pengguna tidak tersedia. Tidak dapat memuat data.", "Error", JOptionPane.ERROR_MESSAGE);
             Tbl_Mutasi.setModel(new DefaultTableModel()); // Kosongkan tabel jika NIK tidak ada
+            updatePaginationButtons();
             return; // Menghentikan eksekusi metode
         }
 
@@ -229,42 +278,93 @@ private void inisialisasiTahun() {
     }
 
     private void tampilkanData(int tahun, String nikPengguna) {
-        DefaultTableModel model = new DefaultTableModel(); // Membuat model tabel baru
-        // Menambahkan kolom ke tabel
+        // Inisialisasi model tabel dan atur kolom agar tidak dapat diedit
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Semua kolom tidak dapat diedit
+            }
+        };
         model.addColumn("Tanggal");
         model.addColumn("Nominal");
         model.addColumn("Status");
-        String sql = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga "
-                + "WHERE YEAR(tanggal) = ? AND nik = ? "
-                + "ORDER BY tanggal ASC"; // Query SQL untuk mengambil data berdasarkan tahun dan NIK
 
-        // Menjalin koneksi ke database dan menyiapkan query SQL
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+        Tbl_Mutasi.setModel(model); // Set model awal (kosong)
 
-            pst.setInt(1, tahun); // Mengatur parameter tahun pada query
-            pst.setString(2, nikPengguna); // Mengatur parameter NIK pada query
+        // Hitung offset untuk paginasi
+        int offset = (currentPage - 1) * rowsPerPage;
 
-            try (ResultSet rs = pst.executeQuery()) { // Menjalankan query dan mendapatkan hasil
-                while (rs.next()) { // Iterasi setiap baris hasil query
-                    java.sql.Date sqlDate = rs.getDate("tanggal");
-                    String formattedDate = "";
-                    if (sqlDate != null) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                        formattedDate = sdf.format(new Date(sqlDate.getTime())); // Memformat tanggal
-                    }
-                    // Menambahkan data ke model tabel
-                    model.addRow(new Object[]{
-                        formattedDate,
-                        rs.getString("nominal"),
-                        rs.getString("status")
-                    });
-                }
-                Tbl_Mutasi.setModel(model); // Mengatur agar tabel menampilkan isi dari 'model' ini
+        // Membuka koneksi database (otomatis ditutup setelah blok try)
+        try (Connection conn = sijimpit.Koneksi.getConnection()) {
+            if (conn == null) {
+                JOptionPane.showMessageDialog(this, "Koneksi ke database gagal dibuat. Pastikan database berjalan.", "Error Koneksi", JOptionPane.ERROR_MESSAGE);
+                // Nonaktifkan tombol pagination jika koneksi gagal
+                updatePaginationButtons();
+                return;
             }
-        // Menangani kesalahan database
+
+            // 1. Hitung total baris data untuk paginasi berdasarkan tahun dan NIK
+            String countQuery = "SELECT COUNT(*) FROM menu_pembayaran_warga WHERE YEAR(tanggal) = ? AND nik = ?";
+            try (PreparedStatement psCount = conn.prepareStatement(countQuery)) {
+                psCount.setInt(1, tahun);
+                psCount.setString(2, nikPengguna);
+                try (ResultSet countRs = psCount.executeQuery()) {
+                    if (countRs.next()) {
+                        totalRows = countRs.getInt(1); // Dapatkan jumlah total baris
+                        totalPages = (int) Math.ceil((double) totalRows / rowsPerPage); // Hitung total halaman
+                        // Pastikan totalPages minimal 1 jika ada data
+                        if (totalRows > 0 && totalPages == 0) {
+                            totalPages = 1;
+                        }
+                    } else {
+                        totalRows = 0;
+                        totalPages = 0;
+                    }
+                }
+            }
+
+            // 2. Ambil data untuk halaman saat ini dengan LIMIT dan OFFSET
+            String dataQuery = "SELECT tanggal, nominal, status FROM menu_pembayaran_warga "
+                    + "WHERE YEAR(tanggal) = ? AND nik = ? "
+                    + "ORDER BY tanggal ASC LIMIT ? OFFSET ?";
+
+            try (PreparedStatement psData = conn.prepareStatement(dataQuery)) {
+                psData.setInt(1, tahun);
+                psData.setString(2, nikPengguna);
+                psData.setInt(3, rowsPerPage);
+                psData.setInt(4, offset);
+
+                try (ResultSet rs = psData.executeQuery()) {
+                    while (rs.next()) {
+                        // Format tanggal dan tambahkan baris ke model tabel
+                        java.sql.Date sqlDate = rs.getDate("tanggal");
+                        String formattedDate = "";
+                        if (sqlDate != null) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                            formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                        }
+                        model.addRow(new Object[]{
+                            formattedDate,
+                            rs.getString("nominal"),
+                            rs.getString("status")
+                        });
+                    }
+                    Tbl_Mutasi.setModel(model); // Set model tabel setelah data ditambahkan
+                }
+            }
+
+            // Memperbarui tombol pagination setelah data dimuat
+            updatePaginationButtons();
+
+            // Menangani error SQL
         } catch (SQLException e) {
-            System.err.println("Gagal ambil data berdasarkan tahun " + tahun + " untuk NIK " + nikPengguna + ": " + e.getMessage());
+            System.err.println("Gagal ambil data mutasi dengan pagination: " + e.getMessage());
             JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+            Tbl_Mutasi.setModel(new DefaultTableModel()); // Kosongkan tabel jika ada error
+            // Mengatur ulang data paginasi dan perbarui tampilan tombol
+            totalRows = 0;
+            totalPages = 0;
+            updatePaginationButtons();
         }
     }
 
@@ -278,9 +378,10 @@ private void inisialisasiTahun() {
     private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
         try {
             String reportPath = "src/jasper/Mutasi.jasper"; // Lokasi file template laporan JasperReports
-            HashMap<String, Object> parameters = new HashMap<>(); // Peta untuk parameter laporan
+            HashMap<String, Object> parameters = new HashMap<>(); // Inisialisasi parameter laporan
             String selectedYearOption = (String) combo_tahun.getSelectedItem(); // Ambil pilihan tahun dari combobox
 
+            // Validasi pilihan tahun
             if (selectedYearOption == null || selectedYearOption.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Mohon pilih tahun terlebih dahulu (Transaksi Tahun Ini atau Transaksi Tahun Lalu).", "Peringatan", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -288,7 +389,7 @@ private void inisialisasiTahun() {
 
             Integer selectedYear = null;
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
+            // Menentukan tahun berdasarkan pilihan combobox
             if (selectedYearOption.equals("Transaksi Tahun Ini")) {
                 selectedYear = currentYear;
                 System.out.println("Memilih 'Transaksi Tahun Ini'. Parameter tahun dikirim: " + selectedYear);
@@ -305,7 +406,7 @@ private void inisialisasiTahun() {
                 return;
             }
             // Menambahkan parameter tahun
-            parameters.put("tahun", selectedYear); 
+            parameters.put("tahun", selectedYear);
             String loggedInUserNik = sijimpit.UserSession.getLoggedInUserNik(); // Mengambil nik pengguna
             System.out.println("DEBUG: NIK dari UserSession = " + loggedInUserNik);
             if (loggedInUserNik == null || loggedInUserNik.isEmpty()) {
@@ -313,21 +414,52 @@ private void inisialisasiTahun() {
                 return;
             }
             // Menambahkan parameter NIK
-            parameters.put("nik_filter", loggedInUserNik); 
+            parameters.put("nik_filter", loggedInUserNik);
             System.out.println("Nilai parameter nik_filter yang dikirim ke Jasper: " + loggedInUserNik);
 
             Connection conn = Koneksi.getConnection(); // Mendapatkan koneksi database
             JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn); // Isi laporan dengan data
             // Tampilkan laporan
-            JasperViewer viewer = new JasperViewer(print, false); 
+            JasperViewer viewer = new JasperViewer(print, false);
             viewer.setVisible(true);
-            
-        // Menangani kesalahan pembuatan laporan
+
+            // Menangani kesalahan pembuatan laporan
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_unduhActionPerformed
+
+    private void btn_berikutnyaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_berikutnyaActionPerformed
+        // Pindah ke halaman berikutnya jika bukan halaman terakhir
+        if (currentPage < totalPages) {
+            currentPage++; // Tambah nomor halaman
+            tampilkanDataBerdasarkanComboBox(); // Muat ulang data untuk halaman baru
+        }
+    }//GEN-LAST:event_btn_berikutnyaActionPerformed
+
+    private void btn_sebelumnyaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sebelumnyaActionPerformed
+        // Pindah ke halaman sebelumnya jika bukan halaman pertama
+        if (currentPage > 1) {
+            currentPage--; // Kurangi nomor halaman
+            tampilkanDataBerdasarkanComboBox(); // Muat ulang data untuk halaman baru
+        }
+    }//GEN-LAST:event_btn_sebelumnyaActionPerformed
+
+    private void updatePaginationButtons() {
+        // Atur status tombol 'Sebelumnya' (aktif jika bukan halaman 1)
+        if (btn_sebelumnya != null) {
+            btn_sebelumnya.setEnabled(currentPage > 1);
+        }
+        // Atur status tombol 'Berikutnya' (aktif jika bukan halaman terakhir)
+        if (btn_berikutnya != null) {
+            btn_berikutnya.setEnabled(currentPage < totalPages);
+        }
+        // Perbarui teks label status halaman
+        if (lblPageStatus != null) {
+            lblPageStatus.setText("Halaman " + currentPage + " dari " + totalPages + " (Total: " + totalRows + " data)");
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -367,6 +499,8 @@ private void inisialisasiTahun() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Tbl_Mutasi;
     private javax.swing.JButton btn_back;
+    private javax.swing.JButton btn_berikutnya;
+    private javax.swing.JButton btn_sebelumnya;
     private javax.swing.JButton btn_unduh;
     private javax.swing.JComboBox<String> combo_tahun;
     private javax.swing.JLabel jLabel1;
@@ -374,5 +508,6 @@ private void inisialisasiTahun() {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblPageStatus;
     // End of variables declaration//GEN-END:variables
 }

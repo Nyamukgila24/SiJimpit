@@ -27,8 +27,14 @@ import sijimpit.Koneksi;
  */
 public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
 
-    private Connection conn;
+    private int currentPage = 1;  // Mulai dari halaman 1
+    private int rowsPerPage = 50; // Jumlah baris per halaman
+    private int totalRows = 0;    // Total baris dari database
+    private int totalPages = 0;   // Total halaman yang tersedia
+    private String currentSelectedMonth = "Bulan Januari"; // Simpan bulan yang sedang aktif
+    private boolean isTahunLalu = false; // Defaultnya adalah menampilkan data tahun ini (false = tahun ini, true = tahun lalu)
 
+//    private Connection conn;
     /**
      * Creates new form MenuCatatanKeuanganAdmin
      */
@@ -36,11 +42,11 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         initComponents();
         inisialisasiBulan();
-        tampilkanSemuaData();
 
         if (combo_bulan.getItemCount() > 0) {
             combo_bulan.setSelectedIndex(0);
         }
+        reloadCurrentPage(); // Memuat data untuk bulan/tahun default (Januari tahun ini)
     }
 
     /**
@@ -61,6 +67,9 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         Tbl_Keuangan = new javax.swing.JTable();
         combo_bulan = new javax.swing.JComboBox<>();
+        btn_sebelumnya = new javax.swing.JButton();
+        btn_berikutnya = new javax.swing.JButton();
+        lblPageStatus = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(600, 500));
@@ -162,19 +171,49 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
             }
         });
 
+        btn_sebelumnya.setBackground(new java.awt.Color(255, 255, 0));
+        btn_sebelumnya.setText("Data Sebelumnya");
+        btn_sebelumnya.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_sebelumnyaActionPerformed(evt);
+            }
+        });
+
+        btn_berikutnya.setBackground(new java.awt.Color(255, 255, 0));
+        btn_berikutnya.setText("Data Berikutnya");
+        btn_berikutnya.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_berikutnyaActionPerformed(evt);
+            }
+        });
+
+        lblPageStatus.setText("Menampilkan jumlah halaman");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(combo_bulan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(combo_bulan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(137, 137, 137)
+                        .addComponent(btn_sebelumnya)
+                        .addGap(79, 79, 79)
+                        .addComponent(btn_berikutnya, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(lblPageStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,8 +222,14 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(combo_bulan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblPageStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_sebelumnya)
+                    .addComponent(btn_berikutnya))
+                .addGap(33, 33, 33))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -213,78 +258,102 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         combo_bulan.addItem("Tahun Lalu"); // Menambahkan opsi 'Tahun Lalu'
     }
 
-    private void tampilkanData(int bulan) {
-        DefaultTableModel model = new DefaultTableModel(); // Membuat model tabel baru
-        // Menambahkan kolom ke tabel
-        model.addColumn("nama");
-        model.addColumn("nik");
-        model.addColumn("no_hp");
-        model.addColumn("nominal");
-        model.addColumn("tanggal");
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR); // Mendapatkan tahun saat ini
-        
-        // Membuka koneksi database dan menyiapkan query SQL untuk mengambil data pembayaran terverifikasi berdasarkan bulan dan tahun
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY nik ASC")) {
-            pst.setInt(1, bulan); // Mengatur parameter bulan pada query SQL
-            pst.setInt(2, currentYear); // Mengatur parameter tahun pada query SQL
-            pst.setInt(1, bulan);  // Memeriksa duplikasi parameter bulan
-
-            try (ResultSet rs = pst.executeQuery()) { // Menjalankan query dan mendapatkan hasil
-                while (rs.next()) { // Iterasi setiap baris hasil query
-                    java.sql.Date sqlDate = rs.getDate("tanggal");
-                    String formattedDate = "";
-                    if (sqlDate != null) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                        formattedDate = sdf.format(new Date(sqlDate.getTime())); // Memformat tanggal
-                    }
-                    // Menambahkan data ke model tabel
-                    model.addRow(new Object[]{ 
-                        rs.getString("nama"),
-                        rs.getString("nik"),
-                        rs.getString("no_hp"),
-                        rs.getString("nominal"),
-                        formattedDate
-                    });
-                }
-                Tbl_Keuangan.setModel(model); // Mengatur agar tabel menampilkan isi dari 'model' ini
+    private void loadDataForPage(int bulan, int tahun, boolean isTahunLaluMode) {
+        // Membuat model tabel baru dan mengaturnya ke JTable
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Mengatur semua kolom menjadi tidak dapat diedit
             }
-        // Menangani kesalahan database
-        } catch (SQLException e) {
-            System.err.println("Gagal ambil data berdasarkan bulan: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void tampilkanSemuaData() {
-        DefaultTableModel model = new DefaultTableModel();
+        };
+        // Menambahkan kolom ke model tabel
         model.addColumn("Nama");
         model.addColumn("NIK");
         model.addColumn("No. HP");
         model.addColumn("Nominal");
         model.addColumn("Tanggal");
 
-        try (Connection conn = sijimpit.Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE status = 'verifikasi' ORDER BY nik ASC")) {
+        Tbl_Keuangan.setModel(model);
+        // Menghitung offset untuk pagination
+        int offset = (currentPage - 1) * rowsPerPage;
 
-            while (rs.next()) {
-                java.sql.Date sqlDate = rs.getDate("tanggal");
-                String formattedDate = "";
-                if (sqlDate != null) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                    formattedDate = sdf.format(new Date(sqlDate.getTime()));
-                }
-                model.addRow(new Object[]{
-                    rs.getString("nama"),
-                    rs.getString("nik"),
-                    rs.getString("no_hp"),
-                    rs.getString("nominal"),
-                    formattedDate
-                });
+        // Membuka koneksi database menggunakan try-with-resources untuk penutupan otomatis
+        try (Connection conn = sijimpit.Koneksi.getConnection()) {
+            // 1. Hitung Total Baris untuk pagination berdasarkan mode tahun lalu atau bulan/tahun
+            String countQuery;
+            if (isTahunLaluMode) {
+                countQuery = "SELECT COUNT(*) FROM menu_pembayaran_warga WHERE YEAR(tanggal) = ? AND status = 'verifikasi'";
+            } else {
+                countQuery = "SELECT COUNT(*) FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND status = 'verifikasi'";
             }
-            Tbl_Keuangan.setModel(model);
 
+            try (PreparedStatement psCount = conn.prepareStatement(countQuery)) {
+                // Menetapkan parameter query hitungan
+                if (isTahunLaluMode) {
+                    psCount.setInt(1, tahun);
+                } else {
+                    psCount.setInt(1, bulan);
+                    psCount.setInt(2, tahun);
+                }
+                try (ResultSet countRs = psCount.executeQuery()) {
+                    if (countRs.next()) {
+                        totalRows = countRs.getInt(1); // Mendapatkan total baris
+                        totalPages = (int) Math.ceil((double) totalRows / rowsPerPage); // Menghitung total halaman
+                    }
+                }
+            }
+
+            // 2. Ambil Data untuk Halaman Saat Ini berdasarkan mode tahun lalu atau bulan/tahun
+            String dataQuery;
+            if (isTahunLaluMode) {
+                dataQuery = "SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY nik ASC LIMIT ? OFFSET ?";
+            } else {
+                dataQuery = "SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY nik ASC LIMIT ? OFFSET ?";
+            }
+
+            try (PreparedStatement psData = conn.prepareStatement(dataQuery)) {
+                // Menetapkan parameter query data
+                if (isTahunLaluMode) {
+                    psData.setInt(1, tahun);
+                    psData.setInt(2, rowsPerPage);
+                    psData.setInt(3, offset);
+                } else {
+                    psData.setInt(1, bulan);
+                    psData.setInt(2, tahun);
+                    psData.setInt(3, rowsPerPage);
+                    psData.setInt(4, offset);
+                }
+
+                try (ResultSet rs = psData.executeQuery()) {
+                    // Mengisi model tabel dengan data dari ResultSet
+                    while (rs.next()) {
+                        java.sql.Date sqlDate = rs.getDate("tanggal");
+                        String formattedDate = "";
+                        if (sqlDate != null) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                            formattedDate = sdf.format(new Date(sqlDate.getTime()));
+                        }
+                        model.addRow(new Object[]{
+                            rs.getString("nama"),
+                            rs.getString("nik"),
+                            rs.getString("no_hp"),
+                            rs.getString("nominal"),
+                            formattedDate
+                        });
+                    }
+                }
+            }
+            // Memperbarui tombol pagination setelah data dimuat
+            updatePaginationButtons();
+            // Menangani error SQL
         } catch (SQLException e) {
-            System.err.println("Gagal ambil seluruh data: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "Gagal mengambil seluruh data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Gagal memuat data dengan pagination: " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Gagal mengambil data dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            // Menangani kesalahan umum
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan tidak terduga: " + e.getMessage(), "Error Umum", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -294,7 +363,7 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         }
         String trimmedSelectedMonth = selectedMonth.trim(); // Membersihkan spasi di awal/akhir string
         System.out.println("DEBUG: trimmedSelectedMonth: '" + trimmedSelectedMonth + "'");
-        
+
         // Mengubah nama bulan string menjadi angka bulan (1-12)
         switch (trimmedSelectedMonth) {
             case "Bulan Januari":
@@ -326,45 +395,6 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
         }
     }
 
-    private void tampilkanDataTahunLalu() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Nama");
-        model.addColumn("NIK");
-        model.addColumn("No. HP");
-        model.addColumn("Nominal");
-        model.addColumn("Tanggal");
-
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR); // Mendapatkan tahun saat ini
-        int lastYear = currentYear - 1; // Mendapatkan tahun lalu
-
-        try (Connection conn = sijimpit.Koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT nama, nik, no_hp, nominal, tanggal FROM menu_pembayaran_warga WHERE YEAR(tanggal) = ? AND status = 'verifikasi' ORDER BY nik ASC")) {
-
-            pst.setInt(1, lastYear);
-            try (ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
-                    java.sql.Date sqlDate = rs.getDate("tanggal");
-                    String formattedDate = "";
-                    if (sqlDate != null) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                        formattedDate = sdf.format(new Date(sqlDate.getTime()));
-                    }
-                    model.addRow(new Object[]{
-                        rs.getString("nama"),
-                        rs.getString("nik"),
-                        rs.getString("no_hp"),
-                        rs.getString("nominal"),
-                        formattedDate
-                    });
-                }
-                Tbl_Keuangan.setModel(model);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Gagal ambil data tahun lalu: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "Gagal mengambil data tahun lalu dari database: " + e.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
         TampilanAwalAdmin admin = new TampilanAwalAdmin();
         admin.setVisible(true);
@@ -372,14 +402,21 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_backActionPerformed
 
     private void combo_bulanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_bulanActionPerformed
-        String selectedMonth = (String) combo_bulan.getSelectedItem();
-        if (selectedMonth != null && !selectedMonth.trim().isEmpty()) {
-            if (selectedMonth.equals("Tahun Lalu")) {
-                tampilkanDataTahunLalu(); // Metode baru untuk menampilkan data tahun lalu
+        currentSelectedMonth = (String) combo_bulan.getSelectedItem(); // Simpan pilihan bulan
+        currentPage = 1; // Reset ke halaman pertama setiap kali bulan/tahun diubah
+
+        if (currentSelectedMonth != null && !currentSelectedMonth.trim().isEmpty()) {
+            if (currentSelectedMonth.equals("Tahun Lalu")) {
+                isTahunLalu = true;
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                int lastYear = currentYear - 1;
+                loadDataForPage(-1, lastYear, true); // -1 karena bulan tidak relevan untuk tahun lalu
             } else {
-                int bulanAngka = ubahBulanKeAngka(selectedMonth);
+                isTahunLalu = false;
+                int bulanAngka = ubahBulanKeAngka(currentSelectedMonth);
                 if (bulanAngka != -1) {
-                    tampilkanData(bulanAngka);
+                    int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                    loadDataForPage(bulanAngka, currentYear, false);
                 } else {
                     JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid.", "Error", JOptionPane.WARNING_MESSAGE);
                 }
@@ -389,12 +426,13 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
 
     private void btn_unduhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_unduhActionPerformed
         try {
-            String reportPath = "src/jasper/CatatanKeuangan.jasper"; // Mendefinisikan lokasi template laporan
-            HashMap<String, Object> parameters = new HashMap<>(); // Peta untuk parameter laporan
+            String reportPath = "src/jasper/CatatanKeuangan.jasper"; // Lokasi file template laporan JasperReports
+            HashMap<String, Object> parameters = new HashMap<>(); // Inisialisasi parameter laporan
             String selectedMonth = (String) combo_bulan.getSelectedItem(); // Ambil pilihan tahun dari combobox
             parameters.put("parameter_bulan", null);
             parameters.put("parameter_tahun", null);
 
+            // Menentukan bulan berdasarkan pilihan combobox
             if (selectedMonth != null && !selectedMonth.trim().isEmpty()) {
                 if (selectedMonth.equals("Tahun Lalu")) {
                     int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -402,33 +440,86 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
                     parameters.put("parameter_tahun", lastYear);
                     System.out.println("Parameters yang dikirim ke Jasper (Tahun Lalu): " + parameters);
                 } else {
-                    int monthNumber = ubahBulanKeAngka(selectedMonth);
-                    if (monthNumber != -1) { // Mengubah nama bulan menjadi angka
-                        parameters.put("parameter_bulan", monthNumber); // Mengatur parameter bulan
+                    int monthNumber = ubahBulanKeAngka(selectedMonth);// Konversi nama bulan ke angka
+                    if (monthNumber != -1) {
+                        parameters.put("parameter_bulan", monthNumber);
                         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                        parameters.put("parameter_tahun", currentYear); // Mengatur parameter tahun saat ini
+                        parameters.put("parameter_tahun", currentYear);
                         System.out.println("Parameters yang dikirim ke Jasper (Bulan): " + parameters);
                     } else {
                         JOptionPane.showMessageDialog(this, "Pilihan bulan tidak valid. Mohon pilih bulan yang benar.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return; // Menghentikan proses jika bulan tidak valid
+                        return;
                     }
                 }
             } else {
-
+                // Default ke bulan dan tahun sekarang jika tidak ada bulan yang dipilih
+                int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                parameters.put("parameter_bulan", currentMonth);
+                parameters.put("parameter_tahun", currentYear);
             }
-            
-            Connection conn = Koneksi.getConnection(); // Mendapatkan koneksi database
-            JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn); // Isi laporan dengan data
-            // Tampilkan laporan
-            JasperViewer viewer = new JasperViewer(print, false);
-            viewer.setVisible(true);
-            
-        // Menangani kesalahan pembuatan laporan
+
+            // Dapatkan koneksi dan isi laporan Jasper
+            try (Connection conn = sijimpit.Koneksi.getConnection()) {
+                if (conn == null) {
+                    JOptionPane.showMessageDialog(this, "Koneksi ke database gagal dibuat untuk laporan. Pastikan database berjalan.", "Error Koneksi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
+                JasperViewer viewer = new JasperViewer(print, false);
+                viewer.setVisible(true);
+            }
+            // Menangani kesalahan pembuatan laporan
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_unduhActionPerformed
+
+    private void btn_sebelumnyaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sebelumnyaActionPerformed
+        // Pindah ke halaman sebelumnya jika belum di halaman pertama
+        if (currentPage > 1) {
+            currentPage--; // Kurangi nomor halaman
+            reloadCurrentPage(); // Muat ulang data untuk halaman yang diperbarui
+        }
+    }//GEN-LAST:event_btn_sebelumnyaActionPerformed
+
+    private void btn_berikutnyaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_berikutnyaActionPerformed
+        // Pindah ke halaman berikutnya jika belum di halaman terakhir
+        if (currentPage < totalPages) {
+            currentPage++; // Tambah nomor halaman
+            reloadCurrentPage(); // Muat ulang data untuk halaman yang diperbarui
+        }
+    }//GEN-LAST:event_btn_berikutnyaActionPerformed
+
+    private void reloadCurrentPage() {
+        // Memuat ulang data berdasarkan mode tampilan (tahun lalu atau bulan ini)
+        if (isTahunLalu) {
+            // Jika mode tahun lalu, muat data tahun sebelumnya
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int lastYear = currentYear - 1;
+            loadDataForPage(-1, lastYear, true);
+        } else {
+            // Jika mode bulan ini, muat data untuk bulan dan tahun saat ini
+            int bulanAngka = ubahBulanKeAngka(currentSelectedMonth);
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            loadDataForPage(bulanAngka, currentYear, false);
+        }
+    }
+
+    private void updatePaginationButtons() {
+        // Mengaktifkan/menonaktifkan tombol "Sebelumnya" dan "Berikutnya"
+        if (btn_sebelumnya != null) {
+            btn_sebelumnya.setEnabled(currentPage > 1); // Aktif jika bukan halaman pertama
+        }
+        if (btn_berikutnya != null) {
+            btn_berikutnya.setEnabled(currentPage < totalPages); // Aktif jika bukan halaman terakhir
+        }
+        // Memperbarui teks status halaman
+        if (lblPageStatus != null) {
+            lblPageStatus.setText("Halaman " + currentPage + " dari " + totalPages + " (Total: " + totalRows + " data)");
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -468,6 +559,8 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Tbl_Keuangan;
     private javax.swing.JButton btn_back;
+    private javax.swing.JButton btn_berikutnya;
+    private javax.swing.JButton btn_sebelumnya;
     private javax.swing.JButton btn_unduh;
     private javax.swing.JComboBox<String> combo_bulan;
     private javax.swing.JLabel jLabel1;
@@ -475,5 +568,6 @@ public class MenuCatatanKeuanganAdmin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblPageStatus;
     // End of variables declaration//GEN-END:variables
 }

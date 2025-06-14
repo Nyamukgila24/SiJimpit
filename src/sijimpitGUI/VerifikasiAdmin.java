@@ -2,11 +2,16 @@ package sijimpitGUI;
 
 import java.sql.Connection;
 import sijimpit.KoneksiDatabase;
-import javax.swing.JOptionPane; 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.sql.PreparedStatement;
 
 public class VerifikasiAdmin extends javax.swing.JFrame {
+
+    private int currentPage = 1;
+    private int rowsPerPage = 50; // Anda bisa sesuaikan jumlah baris per halaman
+    private int totalRows = 0;
+    private int totalPages = 0;
 
     /**
      * Creates new form VerifikasiAdmin
@@ -14,32 +19,75 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
     public VerifikasiAdmin() {
         initComponents(); // Menginisialisasi komponen GUI
         setLocationRelativeTo(null); // Menempatkan jendela di tengah layar
-        loadData(); // Memuat data awal ke tabel verifikasi
+        loadDataForPage(); // Memuat data awal ke tabel verifikasi
+        updatePaginationButtons();
     }
 
-    private void loadData() {
-        DefaultTableModel model = (DefaultTableModel) tbl_verifikasi.getModel(); // Mendapatkan model tabel
-        model.setRowCount(0); // Mengosongkan isi tabel sebelum memuat data baru
-
-        try {
-            Connection conn = KoneksiDatabase.getConnection(); // Mendapatkan koneksi ke database
-            String sql = "SELECT nama, nik, tanggal, status FROM menu_pembayaran_warga"; // Query SQL untuk mengambil data
-            PreparedStatement ps = conn.prepareStatement(sql);
-            java.sql.ResultSet rs = ps.executeQuery(); // Menjalankan query dan mendapatkan hasil
-
-            while (rs.next()) { // Iterasi setiap baris hasil query
-                String nama = rs.getString("nama");
-                String nik = rs.getString("nik");
-                String tanggal = rs.getString("tanggal");
-                String status = rs.getString("status");
-
-                boolean verifikasi = "verifikasi".equals(status); // True jika status == verifikasi
-                model.addRow(new Object[]{nama, nik, tanggal, verifikasi});
+    private void loadDataForPage() {
+        // Membuat model tabel dengan kolom yang tidak dapat diedit kecuali kolom "Status"
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 3; // Hanya kolom ke-3 (Status) yang dapat diedit
             }
-        // Menangani kesalahan database
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 3) {
+                    return Boolean.class; // Mengatur tipe data kolom "Status" sebagai Boolean (untuk checkbox)
+                }
+                return super.getColumnClass(columnIndex);
+            }
+        };
+        // Menambahkan kolom ke model tabel
+        model.addColumn("Nama");
+        model.addColumn("NIK");
+        model.addColumn("Tanggal");
+        model.addColumn("Status");
+
+        tbl_verifikasi.setModel(model);
+        // Menghitung offset untuk pagination
+        int offset = (currentPage - 1) * rowsPerPage;
+
+        // Membuka koneksi database menggunakan try-with-resources untuk penutupan otomatis
+        try (Connection conn = KoneksiDatabase.getConnection()) {
+            // 1. Hitung Total Baris data
+            String countSql = "SELECT COUNT(*) FROM menu_pembayaran_warga";
+            // psCount dan rsCount akan ditutup otomatis di akhir blok try ini
+            try (PreparedStatement psCount = conn.prepareStatement(countSql); java.sql.ResultSet rsCount = psCount.executeQuery()) {
+                if (rsCount.next()) {
+                    totalRows = rsCount.getInt(1); // Mendapatkan jumlah total baris
+                    totalPages = (int) Math.ceil((double) totalRows / rowsPerPage); // Menghitung total halaman
+                }
+            }
+
+            // 2. Ambil Data untuk Halaman Saat Ini
+            String dataSql = "SELECT nama, nik, tanggal, status FROM menu_pembayaran_warga ORDER BY tanggal DESC, nama ASC LIMIT ? OFFSET ?";
+            // ps dan rs akan ditutup otomatis di akhir blok try ini
+            try (PreparedStatement ps = conn.prepareStatement(dataSql)) {
+                ps.setInt(1, rowsPerPage); // Menetapkan parameter LIMIT (jumlah baris per halaman)
+                ps.setInt(2, offset); // Menetapkan parameter OFFSET (posisi awal data)
+
+                try (java.sql.ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        // Mengambil data dari ResultSet
+                        String nama = rs.getString("nama");
+                        String nik = rs.getString("nik");
+                        String tanggal = rs.getString("tanggal");
+                        String status = rs.getString("status");
+
+                        boolean verifikasi = "verifikasi".equals(status); // Mengubah status string menjadi boolean
+                        model.addRow(new Object[]{nama, nik, tanggal, verifikasi}); // Menambahkan baris ke model tabel
+                    }
+                }
+            }
+
+            updatePaginationButtons(); // Memperbarui tombol pagination
+
         } catch (Exception e) {
+            // Menangani kesalahan dan menampilkan pesan error
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Gagal memuat data dari database.");
+            JOptionPane.showMessageDialog(this, "Gagal memuat data dari database: " + e.getMessage());
         }
     }
 
@@ -60,6 +108,9 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_verifikasi = new javax.swing.JTable();
         btn_konfirmasi = new javax.swing.JButton();
+        btn_pageberikutnya = new javax.swing.JButton();
+        btn_pagesebelumnya = new javax.swing.JButton();
+        lblPageStatus = new javax.swing.JLabel();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bulan Januari", "Bulan Februari", "Bulan Maret", "Bulan April", "Bulan Mei", "Bulan Juni", "Bulan Juli", "Bulan Agustus", "Bulan September", "Bulan Oktober", "Bulan November", "Bulan Desember" }));
 
@@ -137,29 +188,56 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
             }
         });
 
+        btn_pageberikutnya.setBackground(new java.awt.Color(255, 255, 0));
+        btn_pageberikutnya.setText("Page Berikutnya");
+        btn_pageberikutnya.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_pageberikutnyaActionPerformed(evt);
+            }
+        });
+
+        btn_pagesebelumnya.setBackground(new java.awt.Color(255, 255, 0));
+        btn_pagesebelumnya.setText("Page Sebelumnya");
+        btn_pagesebelumnya.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_pagesebelumnyaActionPerformed(evt);
+            }
+        });
+
+        lblPageStatus.setText("Menampilkan jumlah halaman");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jScrollPane1)
-                .addGap(27, 27, 27))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(176, 176, 176)
-                .addComponent(btn_konfirmasi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(170, 170, 170))
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblPageStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(btn_pagesebelumnya)
+                        .addGap(27, 27, 27)
+                        .addComponent(btn_pageberikutnya)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btn_konfirmasi, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(27, 27, 27))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(btn_konfirmasi, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblPageStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_pagesebelumnya)
+                    .addComponent(btn_pageberikutnya)
+                    .addComponent(btn_konfirmasi, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -176,36 +254,75 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btn_pagesebelumnyaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pagesebelumnyaActionPerformed
+        // Pindah ke halaman sebelumnya jika bukan halaman pertama
+        if (currentPage > 1) {
+            currentPage--; // Kurangi nomor halaman
+            loadDataForPage(); // Muat ulang data
+        }
+    }//GEN-LAST:event_btn_pagesebelumnyaActionPerformed
+
+    private void btn_pageberikutnyaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pageberikutnyaActionPerformed
+        // Pindah ke halaman berikutnya jika bukan halaman terakhir
+        if (currentPage < totalPages) {
+            currentPage++; // Tambah nomor halaman
+            loadDataForPage(); // Muat ulang data
+        }
+    }//GEN-LAST:event_btn_pageberikutnyaActionPerformed
+
+    private void btn_konfirmasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_konfirmasiActionPerformed
+        // Dapatkan model tabel
+        DefaultTableModel model = (DefaultTableModel) tbl_verifikasi.getModel();
+        // Gunakan try-with-resources untuk koneksi di sini juga
+        try (Connection conn = KoneksiDatabase.getConnection()) {
+            String sql = "UPDATE menu_pembayaran_warga SET status='verifikasi' WHERE nik=?"; // Query update status
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                boolean dataToUpdateFound = false; // Flag untuk mengecek apakah ada data yang perlu diupdate
+                // Loop melalui tabel untuk menemukan baris yang dicentang
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    Boolean isChecked = (Boolean) model.getValueAt(i, 3);
+                    if (isChecked != null && isChecked) {
+                        String nik = (String) model.getValueAt(i, 1);
+                        ps.setString(1, nik);
+                        ps.addBatch(); // Tambahkan perintah update ke batch
+                        dataToUpdateFound = true;
+                    }
+                }
+                // Eksekusi batch update jika ada data yang dicentang
+                if (dataToUpdateFound) {
+                    int[] updateCounts = ps.executeBatch(); // Eksekusi semua perintah update
+                    JOptionPane.showMessageDialog(this, "Berhasil verifikasi " + updateCounts.length + " data.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Tidak ada data yang dicentang untuk diverifikasi.", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            loadDataForPage(); // Muat ulang data tabel untuk merefleksikan perubahan status
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Gagal memperbarui status: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_konfirmasiActionPerformed
+
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
         TampilanAwalAdmin menuadmin = new TampilanAwalAdmin();
         menuadmin.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_backActionPerformed
 
-    private void btn_konfirmasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_konfirmasiActionPerformed
-
-        DefaultTableModel model = (DefaultTableModel) tbl_verifikasi.getModel();
-        try {
-            Connection conn = KoneksiDatabase.getConnection();
-            String sql = "UPDATE menu_pembayaran_warga SET status='verifikasi' WHERE nik=?"; // Query SQL untuk memperbarui status pembayaran
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            for (int i = 0; i < model.getRowCount(); i++) { // Loop setiap baris tabel
-                Boolean isChecked = (Boolean) model.getValueAt(i, 3);
-                if (isChecked != null && isChecked) { // Jika checkbox dicentang (true)
-                    String nik = (String) model.getValueAt(i, 1);
-                    ps.setString(1, nik);
-                    ps.executeUpdate(); // Update status di database
-                }
-            }
-            JOptionPane.showMessageDialog(this, "Data berhasil diverifikasi.");
-            loadData(); // Muat ulang data tabel
-        // Menangani kesalahan
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Gagal memperbarui status.");
+    private void updatePaginationButtons() {
+        // Aktifkan atau nonaktifkan tombol "Sebelumnya"
+        if (btn_pagesebelumnya != null) {
+            btn_pagesebelumnya.setEnabled(currentPage > 1); // Tombol aktif jika bukan halaman pertama
         }
-    }//GEN-LAST:event_btn_konfirmasiActionPerformed
+        // Aktifkan atau nonaktifkan tombol "Berikutnya"
+        if (btn_pageberikutnya != null) {
+            btn_pageberikutnya.setEnabled(currentPage < totalPages); // Tombol aktif jika bukan halaman terakhir
+        }
+        // Perbarui teks status halaman
+        if (lblPageStatus != null) {
+            lblPageStatus.setText("Halaman " + currentPage + " dari " + totalPages + " (Total: " + totalRows + " data)");
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -246,11 +363,14 @@ public class VerifikasiAdmin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_back;
     private javax.swing.JButton btn_konfirmasi;
+    private javax.swing.JButton btn_pageberikutnya;
+    private javax.swing.JButton btn_pagesebelumnya;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblPageStatus;
     private javax.swing.JTable tbl_verifikasi;
     // End of variables declaration//GEN-END:variables
 }
