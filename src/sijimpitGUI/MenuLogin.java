@@ -39,6 +39,7 @@ public class MenuLogin extends javax.swing.JFrame {
         btn_masuk = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         btn_daftar = new javax.swing.JButton();
+        btn_masuk1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(600, 400));
@@ -72,6 +73,13 @@ public class MenuLogin extends javax.swing.JFrame {
         btn_daftar.setText("Daftar");
         btn_daftar.setBorder(null);
 
+        btn_masuk1.setText("Panduan");
+        btn_masuk1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_masuk1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -79,7 +87,9 @@ public class MenuLogin extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(199, 199, 199))
+                .addGap(90, 90, 90)
+                .addComponent(btn_masuk1)
+                .addGap(37, 37, 37))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(139, 139, 139)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -99,8 +109,13 @@ public class MenuLogin extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_masuk1)))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -110,10 +125,11 @@ public class MenuLogin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_masuk)
-                    .addComponent(jLabel5)
-                    .addComponent(btn_daftar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_daftar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_masuk)
+                        .addComponent(jLabel5)))
                 .addContainerGap(59, Short.MAX_VALUE))
         );
 
@@ -183,6 +199,12 @@ public class MenuLogin extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, e.getMessage());
     }
     }//GEN-LAST:event_btn_masukActionPerformed
+
+    private void btn_masuk1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_masuk1ActionPerformed
+        Panduan panduan = new Panduan();
+        panduan.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btn_masuk1ActionPerformed
   /**
      * Method ini dijalankan saat tombol "Daftar" diklik.
      * Akan membuka tampilan form pendaftaran.
@@ -235,6 +257,7 @@ public class MenuLogin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_daftar;
     private javax.swing.JButton btn_masuk;
+    private javax.swing.JButton btn_masuk1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
