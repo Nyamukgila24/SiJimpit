@@ -22,14 +22,17 @@ Aplikasi SiJimpit dirancang untuk mempermudah pencatatan dan pelaporan dana jimp
 ### 1. Lakukan login terlebih dahulu (sebagai admin/warga). 
 Jika belum memiliki akun, klik “Daftar” pada menu login, isi semua data pada kolom dengan benar, lalu klik “Daftar”. Setelah berhasil, lakukan login menggunakan akun yang telah terdaftar dari.
 
-### 2.	Jika login sebagai warga, akan tampil menu utama, yaitu Menu Pembayaran, Menu Riwayat Pembayaran, dan Menu Keluar.
+### 2. Panduan Penggunaan Aplikasi.
+Jika memerlukan panduan penggunaan aplikasi, klik button “Panduan”, maka akan tampil halaman panduan. Pilih jenis panduan → tampil langkah-langkah panduan.
+
+### 3.	Jika login sebagai warga, akan tampil menu utama, yaitu Menu Pembayaran, Menu Riwayat Pembayaran, dan Menu Keluar.
 - Klik Menu Pembayaran: Tampil halaman “Isi identitas anda” dengan data Nama, NIK, No.HP, serta input Tanggal dan Nominal. Isi tanggal transaksi dan nominal iuran, lalu klik “Lanjutkan”. Akan tampil halaman “Pembayaran” yang berisi barcode QRIS. Lakukan scan pada barcode menggunakan m-banking. Setelah melakukan pembayaran, kirim bukti ke admin (misalnya via grup WhatsApp RT), lalu klik “Lanjutkan” maka akan tampil halaman yang menunjukkan pembayaran telah selesai, klik pada “Konfirmasi”.
 
 - Klik Menu Riwayat Pembayaran: Tampil halaman “Riwayat Pembayaran”  yang berisi tabel Tanggal, Nominal, dan Status. Pilih opsi tahun (Transaksi Tahun Ini atau Tahun Lalu). Maka akan tampil data seluruh transaksi yang telah anda lakukan berdasarkan opsi. Jika status masih “Belum”, lakukan konfirmasi ulang ke admin. Jika ingin mengunduh data transaksi, klik button unduh → tampil output data → lakukan save jika anda ingin menyimpan, jika tidak cukup klik tanda X.
 
 - Klik button Keluar, maka anda akan langsung keluar dari aplikasi SiJimpit.
 
-### 3.	Jika login sebagai admin, akan tampil menu utama, yaitu Menu Catatan Keuangan, Menu Verifikasi Pembayaran, dan Menu Keluar.
+### 4.	Jika login sebagai admin, akan tampil menu utama, yaitu Menu Catatan Keuangan, Menu Verifikasi Pembayaran, dan Menu Keluar.
 - Klik Menu Catatan Keuangan: Tampil halaman “Catatan Keuangan Masyarakat” yang berisi tabel dengan kolom Nama, NIK, No.HP, Nominal, dan Tanggal. Pilih opsi bulan (Januari – Desember atau Tahun Lalu). Maka akan tampil seluruh data transaksi warga yang sudah terverifikasi berdasarkan opsi. Jika ingin mengunduh data transaksi, klik button unduh → tampil output data → lakukan save jika anda ingin menyimpan, jika tidak cukup klik tanda X.
 
 - Klik Menu Verifikasi Pembayaran: Tampil halaman “Verifikasi Pembayaran Masyarakat” yang berisi tabel Nama, NIK, Tanggal, dan Status. Cek bukti transaksi dari warga, lalu centang kolom Status → klik “Konfirmasi”.
